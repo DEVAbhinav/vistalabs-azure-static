@@ -3,5 +3,8 @@ node_modules/
 *.log
 .env
 .env.local
+/.next/
+/out/
 playwright-report/
 test-results/
+api/local.settings.json

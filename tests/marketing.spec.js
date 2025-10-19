@@ -38,9 +38,9 @@ test.describe('VIstalabs marketing site', () => {
 
   test('navigation anchors reveal key sections', async ({ page }) => {
     await page.goto('/');
-    await ensureNavOpen(page);
-    await page.getByRole('link', { name: 'Azure Advantage' }).click();
-    await expect(page.locator('#azure h2')).toHaveText('The Azure advantage, delivered responsibly');
+  await ensureNavOpen(page);
+  await page.getByRole('link', { name: 'Platform Advantage' }).click();
+  await expect(page.locator('#platform h2')).toHaveText('A managed platform spanning our racks and trusted clouds');
 
     await ensureNavOpen(page);
     await page.getByRole('link', { name: 'Process' }).click();
@@ -56,6 +56,7 @@ test.describe('VIstalabs marketing site', () => {
     await page.goto('/#contact');
     const contactSection = page.locator('#contact');
     await expect(page.getByRole('heading', { name: "Let's design your next launch together" })).toBeVisible();
+    await expect(contactSection.locator('form[data-testid="booking-form"]')).toBeVisible();
     const contactLinks = contactSection.locator('.contact-grid a');
     await expect(contactLinks).toHaveCount(2);
 
