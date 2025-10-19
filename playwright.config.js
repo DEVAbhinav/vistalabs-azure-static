@@ -1,6 +1,9 @@
 const { defineConfig, devices } = require('@playwright/test');
 
-module.exports = defineConfig({
+const baseURL = process.env.PLAYWRIGHT_BASE_URL || 'http://127.0.0.1:4173';
+const skipWebServer = process.env.PLAYWRIGHT_NO_SERVER === '1';
+
+const config = {
   testDir: './tests',
   timeout: 45000,
   expect: {
@@ -9,7 +12,7 @@ module.exports = defineConfig({
   reporter: [['list'], ['html', { outputFolder: 'playwright-report', open: 'never' }]],
   retries: process.env.CI ? 2 : 0,
   use: {
-    baseURL: 'http://127.0.0.1:4173',
+    baseURL,
     viewport: { width: 1440, height: 900 },
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
@@ -28,11 +31,16 @@ module.exports = defineConfig({
       name: 'mobile-chrome',
       use: { ...devices['Pixel 7'] }
     }
-  ],
-  webServer: {
+  ]
+};
+
+if (!skipWebServer) {
+  config.webServer = {
     command: 'npm run dev',
     port: 4173,
     reuseExistingServer: !process.env.CI,
     timeout: 120000
-  }
-});
+  };
+}
+
+module.exports = defineConfig(config);

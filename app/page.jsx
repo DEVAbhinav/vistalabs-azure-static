@@ -233,7 +233,7 @@ export default function HomePage() {
                 </a>
               </li>
             </ul>
-            <a className="btn btn-sm btn-outline nav-cta" href="mailto:info@vistalabs.com">
+            <a className="btn btn-sm btn-outline nav-cta" href="mailto:britz.listen@gmail.com">
               Book discovery
             </a>
           </div>
@@ -250,7 +250,7 @@ export default function HomePage() {
                 Engineers from Microsoft and Amazon co-create with local businesses and government institutions to ship secure, resilient, and future-ready digital platforms.
               </p>
               <div className="hero-actions">
-                <a className="btn btn-primary" href="mailto:info@vistalabs.com">
+                <a className="btn btn-primary" href="mailto:britz.listen@gmail.com">
                   Book a discovery call
                 </a>
                 <button className="btn btn-ghost" type="button" onClick={() => scrollToSection('portfolio')}>
@@ -489,7 +489,7 @@ export default function HomePage() {
                   <span className="tag">Supply Chain</span>
                 </header>
                 <p>Unified control tower for nationwide logistics with tablet-ready workflows, responsive analytics, and fulfilment automations.</p>
-                <a className="arrow-link" href="mailto:info@vistalabs.com?subject=Stark%20Enterprises%20Demo">
+                <a className="arrow-link" href="mailto:britz.listen@gmail.com?subject=Stark%20Enterprises%20Demo">
                   Request walkthrough
                 </a>
               </article>
@@ -502,20 +502,11 @@ export default function HomePage() {
                         <img src="/portfolio/kashitaxi-mobile-view.png" alt="Mobile booking flow for Kashitaxi" loading="lazy" />
                       </picture>
                     </div>
-                    <div className="portfolio-thumb portfolio-thumb--accent">
-                      <picture>
-                        <source srcSet="/portfolio/kashitaxi-form-mobile.webp" type="image/webp" />
-                        <img src="/portfolio/kashitaxi-form-mobile.png" alt="Responsive intake form pattern" loading="lazy" />
-                      </picture>
-                    </div>
-                    <div className="portfolio-thumb">
-                      <picture>
-                        <source srcSet="/portfolio/stark-ent-mobile.webp" type="image/webp" />
-                        <img src="/portfolio/stark-ent-mobile.png" alt="Tablet operations workflow for Stark Enterprises" loading="lazy" />
-                      </picture>
+                    <div className="portfolio-thumb portfolio-thumb--accent portfolio-thumb--note">
+                      <span className="portfolio-thumb__label">Micro-interactions</span>
                     </div>
                   </div>
-                  <figcaption>Forms &amp; Mobile Showcase</figcaption>
+                  <figcaption>Responsive experience system</figcaption>
                 </figure>
                 <header>
                   <h3>Experience Showcase</h3>
@@ -672,7 +663,7 @@ export default function HomePage() {
               <div className="contact-grid">
                 <div>
                   <span className="contact-label">Email</span>
-                  <a href="mailto:info@vistalabs.com">info@vistalabs.com</a>
+                  <a href="mailto:britz.listen@gmail.com">britz.listen@gmail.com</a>
                 </div>
                 <div>
                   <span className="contact-label">Phone</span>

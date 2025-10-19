@@ -641,13 +641,15 @@ h2 {
 }
 
 .portfolio-grid {
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  align-items: stretch;
 }
 
 .portfolio-card {
   gap: 1.5rem;
   padding: 0;
   overflow: hidden;
+  height: 100%;
 }
 
 .portfolio-card header,
@@ -707,7 +709,8 @@ h2 {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 1.5rem;
+  align-items: center;
+  gap: 1rem;
   padding: 2rem;
   background: radial-gradient(circle at 20% 20%, rgba(89, 243, 255, 0.28), transparent 55%),
     linear-gradient(135deg, rgba(4, 20, 52, 0.96), rgba(7, 40, 92, 0.82));
@@ -725,19 +728,39 @@ h2 {
 
 .portfolio-thumbs {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1.1rem;
   width: 100%;
+  justify-items: center;
 }
 
 .portfolio-thumb {
   position: relative;
+  width: 100%;
+  max-width: 220px;
   aspect-ratio: 9 / 16;
   border-radius: var(--radius-sm);
   overflow: hidden;
   border: 1px solid rgba(232, 241, 255, 0.12);
   box-shadow: var(--shadow-soft);
   background: rgba(15, 143, 248, 0.12);
+}
+
+.portfolio-thumb--note {
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 1.2rem;
+  background: linear-gradient(165deg, rgba(89, 243, 255, 0.24), rgba(15, 143, 248, 0.16));
+  border-color: rgba(89, 243, 255, 0.3);
+}
+
+.portfolio-thumb__label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(232, 241, 255, 0.9);
 }
 
 .portfolio-thumb img {
