@@ -1,0 +1,21 @@
+{
+  "name": "vistalabs",
+  "version": "1.0.0",
+  "description": "Static marketing site for VIstalabs Azure-first tech consultancy.",
+  "main": "index.js",
+  "scripts": {
+    "preview": "python3 -m http.server 4173",
+    "test": "playwright test",
+    "test:headed": "playwright test --headed --project=chromium"
+  },
+  "keywords": [
+    "azure",
+    "consultancy",
+    "static-site"
+  ],
+  "author": "VIstalabs",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.56.1"
+  }
+}

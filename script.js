@@ -1,60 +1,106 @@
-// Mobile Navigation Toggle
-const hamburger = document.querySelector('.hamburger');
-const navMenu = document.querySelector('.nav-menu');
+const navToggle = document.querySelector('[data-nav-toggle]');
+const navGroup = document.querySelector('[data-nav-menu]');
+const navLinks = document.querySelectorAll('.nav-link');
+const sections = document.querySelectorAll('section[id]');
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-if (hamburger) {
-    hamburger.addEventListener('click', () => {
-        navMenu.style.display = navMenu.style.display === 'flex' ? 'none' : 'flex';
-        navMenu.style.flexDirection = 'column';
-        navMenu.style.position = 'absolute';
-        navMenu.style.top = '70px';
-        navMenu.style.right = '2rem';
-        navMenu.style.backgroundColor = 'white';
-        navMenu.style.padding = '1rem';
-        navMenu.style.borderRadius = '8px';
-        navMenu.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
-    });
-}
-
-// Smooth scroll to section
-function scrollToSection(sectionId) {
-    const element = document.getElementById(sectionId);
-    if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
+const closeNavigation = () => {
+    if (!navGroup) {
+        return;
     }
+    navGroup.classList.remove('is-open');
+    document.body.classList.remove('no-scroll');
+    if (navToggle) {
+        navToggle.classList.remove('is-active');
+        navToggle.setAttribute('aria-expanded', 'false');
+    }
+};
+
+const toggleNavigation = () => {
+    if (!navGroup) {
+        return;
+    }
+    const isOpen = navGroup.classList.toggle('is-open');
+    document.body.classList.toggle('no-scroll', isOpen);
+    if (navToggle) {
+        navToggle.classList.toggle('is-active', isOpen);
+        navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    }
+};
+
+if (navToggle && navGroup) {
+    navToggle.addEventListener('click', toggleNavigation);
 }
 
-// Close mobile menu when clicking on a link
-document.querySelectorAll('.nav-link').forEach(link => {
+navLinks.forEach(link => {
     link.addEventListener('click', () => {
-        if (window.innerWidth <= 768) {
-            navMenu.style.display = 'none';
-        }
+        closeNavigation();
     });
 });
 
-// Add active state to navigation links based on scroll position
-window.addEventListener('scroll', () => {
-    const sections = document.querySelectorAll('.section, .hero');
-    const navLinks = document.querySelectorAll('.nav-link');
-    
-    let current = '';
+window.addEventListener('resize', () => {
+    if (window.innerWidth > 900) {
+        closeNavigation();
+    }
+});
+
+window.addEventListener('keydown', event => {
+    if (event.key === 'Escape') {
+        closeNavigation();
+    }
+});
+
+function scrollToSection(sectionId) {
+    const element = document.getElementById(sectionId);
+    if (!element) {
+        return;
+    }
+    element.scrollIntoView({ behavior: prefersReducedMotion.matches ? 'auto' : 'smooth' });
+}
+
+window.scrollToSection = scrollToSection;
+
+const highlightNavigation = () => {
+    const scrollPosition = window.scrollY + 160;
+    let currentId = 'home';
+
     sections.forEach(section => {
-        const sectionTop = section.offsetTop;
-        const sectionHeight = section.clientHeight;
-        if (pageYOffset >= sectionTop - 200) {
-            current = section.getAttribute('id');
+        if (scrollPosition >= section.offsetTop && scrollPosition < section.offsetTop + section.offsetHeight) {
+            currentId = section.id;
         }
     });
 
     navLinks.forEach(link => {
-        link.style.color = '';
-        if (link.getAttribute('href') === `#${current}`) {
-            link.style.color = '#0078d4';
-        }
+        const targetId = link.getAttribute('href')?.replace('#', '');
+        link.classList.toggle('is-active', targetId === currentId);
     });
-});
+};
 
-// Console welcome message
-console.log('%c VIstalabs ', 'background: #0078d4; color: white; font-size: 20px; padding: 10px;');
-console.log('Top Tier Tech Consultancy - Built with ❤️ and hosted on Azure Static Web Apps');
+highlightNavigation();
+window.addEventListener('scroll', highlightNavigation, { passive: true });
+
+const revealElements = document.querySelectorAll('[data-reveal]');
+
+if (!prefersReducedMotion.matches && 'IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(
+        entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        },
+        {
+            threshold: 0.18,
+            rootMargin: '0px 0px -80px 0px'
+        }
+    );
+
+    revealElements.forEach(element => observer.observe(element));
+} else {
+    revealElements.forEach(element => element.classList.add('is-visible'));
+}
+
+console.log('%cVIstalabs', 'background:#0f8ff8;color:#010409;padding:6px 12px;font-weight:700;border-radius:6px;');
+console.log('Top-tier Azure consultancy · Crafted with Playwright quality gates.');
