@@ -639,6 +639,65 @@ h2 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.portfolio-card {
+    gap: 1.5rem;
+    padding: 0;
+    overflow: hidden;
+}
+
+.portfolio-card header,
+.portfolio-card p,
+.portfolio-card .inline-note,
+.portfolio-card .arrow-link {
+    padding: 0 2.2rem;
+}
+
+.portfolio-card header {
+    margin-top: 1.6rem;
+}
+
+.portfolio-card p,
+.portfolio-card .inline-note {
+    padding-bottom: 0.5rem;
+}
+
+.portfolio-card .arrow-link {
+    padding-bottom: 2.2rem;
+}
+
+.portfolio-figure {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-bottom: 1px solid rgba(232, 241, 255, 0.08);
+}
+
+.portfolio-figure img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(1.05) contrast(1.05);
+    transform: scale(1.01);
+    transition: transform 320ms ease, filter 320ms ease;
+}
+
+.portfolio-card:hover .portfolio-figure img {
+    transform: scale(1.04);
+    filter: saturate(1.15) contrast(1.08);
+}
+
+.portfolio-figure--gradient {
+    display: grid;
+    place-items: center;
+    background: radial-gradient(circle at 30% 30%, rgba(89, 243, 255, 0.35), transparent 55%),
+        linear-gradient(130deg, rgba(15, 143, 248, 0.65), rgba(4, 20, 52, 0.95));
+    color: var(--text);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+
 .card header {
     display: flex;
     align-items: center;
@@ -859,6 +918,17 @@ h2 {
     .portfolio-grid,
     .team-grid {
         grid-template-columns: 1fr;
+    }
+
+    .portfolio-card header,
+    .portfolio-card p,
+    .portfolio-card .inline-note,
+    .portfolio-card .arrow-link {
+        padding: 0 1.6rem;
+    }
+
+    .portfolio-card .arrow-link {
+        padding-bottom: 1.6rem;
     }
 
     .stat-grid {

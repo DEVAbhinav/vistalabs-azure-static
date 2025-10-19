@@ -49,6 +49,7 @@ test.describe('VIstalabs marketing site', () => {
     await ensureNavOpen(page);
     await page.getByRole('link', { name: 'Portfolio' }).click();
     await expect(page.getByRole('heading', { name: 'Kashitaxi.in' })).toBeVisible();
+    await expect(page.locator('img[alt="Landing page hero of Kashitaxi mobility platform"]')).toBeVisible();
   });
 
   test('cta section lists multiple contact channels', async ({ page }, testInfo) => {
