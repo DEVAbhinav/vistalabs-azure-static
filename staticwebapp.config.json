@@ -8,7 +8,15 @@
   ],
   "navigationFallback": {
     "rewrite": "/index.html",
-    "exclude": ["/_next/*", "/images/*.{png,jpg,gif,ico}", "/css/*", "/js/*", "/portfolio/*", "/api/*"]
+    "exclude": [
+      "/_next/*",
+      "/images/*.{png,jpg,gif,ico}",
+      "/css/*",
+      "/js/*",
+      "/portfolio/*",
+      "/school/*",
+      "/api/*"
+    ]
   },
   "responseOverrides": {
     "404": {
