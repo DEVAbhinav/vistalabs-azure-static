@@ -1,0 +1,71 @@
+<svg width="800" height="450" viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
+    
+  <defs>
+    <linearGradient id="grad-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#081127" />
+      <stop offset="100%" stop-color="#020617" />
+    </linearGradient>
+    <linearGradient id="grad-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3aa0ff" />
+      <stop offset="100%" stop-color="#0f8ff8" />
+    </linearGradient>
+    <linearGradient id="grad-accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#59f3ff" />
+      <stop offset="100%" stop-color="#0ea5e9" />
+    </linearGradient>
+    <linearGradient id="grad-purple" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c084fc" />
+      <stop offset="100%" stop-color="#7c3aed" />
+    </linearGradient>
+    <linearGradient id="grad-emerald" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34d399" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="12" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="glow-sm">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+    <!-- Base dark background with slight radial highlight -->
+    <rect width="800" height="450" fill="url(#grad-bg)" />
+    <circle cx="400" cy="225" r="300" fill="url(#grad-primary)" opacity="0.05" filter="url(#glow)"/>
+    <line x1="0" y1="0" x2="0" y2="450" stroke="rgba(255,255,255,0.015)" stroke-width="1"/><line x1="40" y1="0" x2="40" y2="450" stroke="rgba(255,255,255,0.015)" stroke-width="1"/><line x1="80" y1="0" x2="80" y2="450" stroke="rgba(255,255,255,0.015)" stroke-width="1"/><line x1="120" y1="0" x2="120" y2="450" stroke="rgba(255,255,255,0.015)" stroke-width="1"/><line x1="160" y1="0" x2="160" y2="450" stroke="rgba(255,255,255,0.015)" stroke-width="1"/><line x1="200" y1="0" x2="200" y2="450" stroke="rgba(255,255,255,0.015)" stroke-width="1"/><line x1="240" y1="0" x2="240" y2="450" stroke="rgba(255,255,255,0.015)" stroke-width="1"/><line x1="280" y1="0" x2="280" y2="450" stroke="rgba(255,255,255,0.015)" stroke-width="1"/><line x1="320" y1="0" x2="320" y2="450" stroke="rgba(255,255,255,0.015)" stroke-width="1"/><line x1="360" y1="0" x2="360" y2="450" stroke="rgba(255,255,255,0.015)" stroke-width="1"/><line x1="400" y1="0" x2="400" y2="450" stroke="rgba(255,255,255,0.015)" stroke-width="1"/><line x1="440" y1="0" x2="440" y2="450" stroke="rgba(255,255,255,0.015)" stroke-width="1"/><line x1="480" y1="0" x2="480" y2="450" stroke="rgba(255,255,255,0.015)" stroke-width="1"/><line x1="520" y1="0" x2="520" y2="450" stroke="rgba(255,255,255,0.015)" stroke-width="1"/><line x1="560" y1="0" x2="560" y2="450" stroke="rgba(255,255,255,0.015)" stroke-width="1"/><line x1="600" y1="0" x2="600" y2="450" stroke="rgba(255,255,255,0.015)" stroke-width="1"/><line x1="640" y1="0" x2="640" y2="450" stroke="rgba(255,255,255,0.015)" stroke-width="1"/><line x1="680" y1="0" x2="680" y2="450" stroke="rgba(255,255,255,0.015)" stroke-width="1"/><line x1="720" y1="0" x2="720" y2="450" stroke="rgba(255,255,255,0.015)" stroke-width="1"/><line x1="760" y1="0" x2="760" y2="450" stroke="rgba(255,255,255,0.015)" stroke-width="1"/><line x1="800" y1="0" x2="800" y2="450" stroke="rgba(255,255,255,0.015)" stroke-width="1"/><line x1="0" y1="0" x2="800" y2="0" stroke="rgba(255,255,255,0.015)" stroke-width="1"/><line x1="0" y1="40" x2="800" y2="40" stroke="rgba(255,255,255,0.015)" stroke-width="1"/><line x1="0" y1="80" x2="800" y2="80" stroke="rgba(255,255,255,0.015)" stroke-width="1"/><line x1="0" y1="120" x2="800" y2="120" stroke="rgba(255,255,255,0.015)" stroke-width="1"/><line x1="0" y1="160" x2="800" y2="160" stroke="rgba(255,255,255,0.015)" stroke-width="1"/><line x1="0" y1="200" x2="800" y2="200" stroke="rgba(255,255,255,0.015)" stroke-width="1"/><line x1="0" y1="240" x2="800" y2="240" stroke="rgba(255,255,255,0.015)" stroke-width="1"/><line x1="0" y1="280" x2="800" y2="280" stroke="rgba(255,255,255,0.015)" stroke-width="1"/><line x1="0" y1="320" x2="800" y2="320" stroke="rgba(255,255,255,0.015)" stroke-width="1"/><line x1="0" y1="360" x2="800" y2="360" stroke="rgba(255,255,255,0.015)" stroke-width="1"/><line x1="0" y1="400" x2="800" y2="400" stroke="rgba(255,255,255,0.015)" stroke-width="1"/><line x1="0" y1="440" x2="800" y2="440" stroke="rgba(255,255,255,0.015)" stroke-width="1"/>
+    <circle cx="340.639401167055" cy="104.27554117125149" r="1.9482955272535871" fill="rgba(89, 243, 255, 0.16127755789329493)"/><circle cx="621.3458235025001" cy="37.457091801200825" r="0.5674237330224342" fill="rgba(89, 243, 255, 0.19389449256935856)"/><circle cx="399.95730088506104" cy="322.3959430287206" r="0.9045623338002642" fill="rgba(89, 243, 255, 0.4565026682082761)"/><circle cx="25.30612781042425" cy="250.7130068306668" r="1.5958864523761125" fill="rgba(89, 243, 255, 0.19980964816612537)"/><circle cx="770.5395216131282" cy="133.8741769697513" r="1.0269907512406609" fill="rgba(89, 243, 255, 0.5720324213762619)"/><circle cx="772.4827168264973" cy="305.4682375427333" r="1.0986617632652562" fill="rgba(89, 243, 255, 0.40792393308794317)"/><circle cx="499.53396957592327" cy="91.29675274258474" r="0.6271198496191887" fill="rgba(89, 243, 255, 0.4980411844221413)"/><circle cx="355.0676047375587" cy="53.943978529259596" r="1.9941679054265005" fill="rgba(89, 243, 255, 0.2372278723755036)"/><circle cx="130.86438798891305" cy="249.44226714866883" r="0.7962565281419803" fill="rgba(89, 243, 255, 0.43496881018196043)"/><circle cx="541.0708621761373" cy="284.7583108165473" r="1.8562836504784246" fill="rgba(89, 243, 255, 0.24994538069325337)"/><circle cx="412.27332663320533" cy="41.513184420236456" r="0.9073002016771504" fill="rgba(89, 243, 255, 0.165758195638281)"/><circle cx="751.3061122080469" cy="0.20550118643789528" r="0.5211540376203201" fill="rgba(89, 243, 255, 0.1008665332427551)"/><circle cx="791.1321635418398" cy="394.08764263386894" r="1.0341694845335136" fill="rgba(89, 243, 255, 0.2412818998335893)"/><circle cx="536.5766259964612" cy="371.4222294775327" r="0.6793111085774182" fill="rgba(89, 243, 255, 0.15390494091214715)"/><circle cx="756.600185902744" cy="64.9776829647188" r="0.8545874802654528" fill="rgba(89, 243, 255, 0.2675656618826937)"/><circle cx="428.37599529261877" cy="14.254107952508289" r="1.0242935142893899" fill="rgba(89, 243, 255, 0.45261117804478)"/><circle cx="332.4393777450588" cy="386.59778342613384" r="1.8378233317267387" fill="rgba(89, 243, 255, 0.34281801374922105)"/><circle cx="700.1263111987371" cy="368.86104778530563" r="1.6381295834744447" fill="rgba(89, 243, 255, 0.35451210552050294)"/><circle cx="372.73027569314473" cy="5.603186227492063" r="1.3193853494921894" fill="rgba(89, 243, 255, 0.10406906263598939)"/><circle cx="72.03365519899982" cy="301.66867791308385" r="1.1673779134629467" fill="rgba(89, 243, 255, 0.22496917822872445)"/><circle cx="392.66578694052436" cy="386.2806701686249" r="1.7325464702958944" fill="rgba(89, 243, 255, 0.1786371309894256)"/><circle cx="319.16872122650693" cy="34.46147027065726" r="1.3148972978845062" fill="rgba(89, 243, 255, 0.2319696221257749)"/><circle cx="313.8309730372601" cy="163.2610916558498" r="1.205655441307552" fill="rgba(89, 243, 255, 0.19517813199381331)"/><circle cx="474.22455515172396" cy="186.20301641765667" r="1.3596813245107235" fill="rgba(89, 243, 255, 0.19232967069000387)"/><circle cx="738.2439917905976" cy="21.81423473221129" r="0.8320368851960462" fill="rgba(89, 243, 255, 0.24738652103199257)"/><circle cx="449.1167055141732" cy="95.29072965001917" r="1.1101088200001297" fill="rgba(89, 243, 255, 0.1843128238908396)"/><circle cx="217.94958364524052" cy="200.35544100513843" r="0.7212588313443095" fill="rgba(89, 243, 255, 0.45147642525822584)"/><circle cx="94.91916016237258" cy="206.56602739876868" r="0.8087532590790393" fill="rgba(89, 243, 255, 0.519515525915261)"/><circle cx="768.3555691108193" cy="260.09953152312744" r="1.922160967687226" fill="rgba(89, 243, 255, 0.27506606711222126)"/><circle cx="471.1665383784334" cy="415.55883427060627" r="0.77157407972669" fill="rgba(89, 243, 255, 0.46585649693784825)"/>
+    <!-- Specific Content -->
+    
+  <!-- Glowing central orb -->
+  <circle cx="400" cy="225" r="120" fill="url(#grad-purple)" opacity="0.3" filter="url(#glow)"/>
+  <circle cx="400" cy="225" r="80" fill="url(#grad-accent)" opacity="0.5" filter="url(#glow)"/>
+
+  <!-- Soundwaves -->
+  <g stroke="url(#grad-primary)" stroke-linecap="round" filter="url(#glow-sm)">
+    <line x1="100" y1="225" x2="100" y2="225" stroke-width="12"/>
+    <line x1="140" y1="180" x2="140" y2="270" stroke-width="12"/>
+    <line x1="180" y1="140" x2="180" y2="310" stroke-width="12"/>
+    <line x1="220" y1="80" x2="220" y2="370" stroke-width="12" stroke="url(#grad-accent)"/>
+    <line x1="260" y1="120" x2="260" y2="330" stroke-width="12"/>
+    <line x1="300" y1="160" x2="300" y2="290" stroke-width="12"/>
+    <line x1="340" y1="200" x2="340" y2="250" stroke-width="12" />
+    
+    <!-- Mirror side -->
+    <line x1="460" y1="190" x2="460" y2="260" stroke-width="12"/>
+    <line x1="500" y1="140" x2="500" y2="310" stroke-width="12"/>
+    <line x1="540" y1="90" x2="540" y2="360" stroke-width="12" stroke="url(#grad-accent)"/>
+    <line x1="580" y1="150" x2="580" y2="300" stroke-width="12"/>
+    <line x1="620" y1="190" x2="620" y2="260" stroke-width="12"/>
+    <line x1="660" y1="210" x2="660" y2="240" stroke-width="12"/>
+    <line x1="700" y1="225" x2="700" y2="225" stroke-width="12"/>
+  </g>
+
+  </svg>

@@ -1,0 +1,67 @@
+      <svg width="400" height="300" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="primary-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#a1a1aa" stop-opacity="0.2"/>
+    </linearGradient>
+    <linearGradient id="accent-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#0066ff" stop-opacity="0.2"/>
+    </linearGradient>
+    <linearGradient id="glass-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.02"/>
+    </linearGradient>
+    <linearGradient id="glass-border" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.0"/>
+    </linearGradient>
+    <!-- Filters -->
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="12" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <filter id="glow-strong" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="24" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <filter id="glass-blur" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur stdDeviation="16" />
+      <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo" />
+      <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+    </filter>
+  </defs>
+        <g transform="translate(50, 80)">
+            <path d="M 20 150 Q 100 140 150 80 T 280 10" fill="none" stroke="url(#accent-grad)" stroke-width="8" stroke-linecap="round" filter="url(#glow)"/>
+  <g transform="translate(20, 150)">
+    <circle cx="0" cy="0" r="12.5" fill="#ffffff" opacity="0.15" filter="url(#glow)">
+        <animate attributeName="opacity" values="0.15;0.35;0.15" dur="4s" begin="0s" repeatCount="indefinite" />
+    </circle>
+    <circle cx="0" cy="0" r="5" fill="#ffffff" opacity="0.8">
+        <animate attributeName="r" values="5;6;5" dur="4s" begin="0s" repeatCount="indefinite" />
+    </circle>
+  </g>
+  <g transform="translate(150, 80)">
+    <circle cx="0" cy="0" r="15" fill="#ffffff" opacity="0.15" filter="url(#glow)">
+        <animate attributeName="opacity" values="0.15;0.35;0.15" dur="4s" begin="1s" repeatCount="indefinite" />
+    </circle>
+    <circle cx="0" cy="0" r="6" fill="#ffffff" opacity="0.8">
+        <animate attributeName="r" values="6;7.199999999999999;6" dur="4s" begin="1s" repeatCount="indefinite" />
+    </circle>
+  </g>
+  <g transform="translate(280, 10)">
+    <circle cx="0" cy="0" r="20" fill="#00e5ff" opacity="0.15" filter="url(#glow)">
+        <animate attributeName="opacity" values="0.15;0.35;0.15" dur="4s" begin="0s" repeatCount="indefinite" />
+    </circle>
+    <circle cx="0" cy="0" r="8" fill="#00e5ff" opacity="0.8">
+        <animate attributeName="r" values="8;9.6;8" dur="4s" begin="0s" repeatCount="indefinite" />
+    </circle>
+  </g>
+            <rect x="20" y="100" width="20" height="60" rx="4" fill="url(#primary-grad)" opacity="0.2"/>
+            <rect x="80" y="80" width="20" height="80" rx="4" fill="url(#primary-grad)" opacity="0.3"/>
+            <rect x="140" y="110" width="20" height="50" rx="4" fill="url(#primary-grad)" opacity="0.4"/>
+            <rect x="200" y="40" width="20" height="120" rx="4" fill="url(#primary-grad)" opacity="0.6"/>
+            <rect x="260" y="20" width="20" height="140" rx="4" fill="url(#accent-grad)" opacity="0.8"/>
+        </g>
+      </svg>
