@@ -488,6 +488,34 @@ export default function HomePage() {
           </div>
         </section>
 
+        <section className="section section-alt" data-reveal>
+          <div className="container">
+            <div className="section-header">
+              <p className="eyebrow">Education Solutions</p>
+              <h2>Dedicated offerings for schools and academic teams</h2>
+              <p className="section-lede">
+                Explore focused solutions for school operations and academic management with direct access to call or WhatsApp VIstalabs.
+              </p>
+            </div>
+            <div className="grid offer-entry-grid">
+              <article className="card">
+                <h3>School ERP</h3>
+                <p>Position a complete school operations platform around admissions, fees, academics, certificates, and parent experience.</p>
+                <a className="arrow-link" href="/school-erp">
+                  View School ERP page
+                </a>
+              </article>
+              <article className="card">
+                <h3>Academic Offering</h3>
+                <p>Present the academic story separately for principals and coordinators focused on timetable, attendance, exams, and classroom visibility.</p>
+                <a className="arrow-link" href="/academic-offering">
+                  View academic page
+                </a>
+              </article>
+            </div>
+          </div>
+        </section>
+
         <section id="process" className="section section-split" data-reveal>
           <div className="container split-layout">
             <div className="split-copy">

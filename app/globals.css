@@ -530,6 +530,10 @@ h2 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.offer-entry-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .card {
   background: var(--surface);
   border-radius: var(--radius-md);
@@ -1016,6 +1020,162 @@ h2 {
   text-decoration: none;
 }
 
+.offering-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  margin-left: auto;
+  flex: 1 1 auto;
+}
+
+.offering-links {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.offering-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.offering-call {
+  color: var(--text);
+}
+
+.offer-page {
+  padding-top: 6.5rem;
+}
+
+.offer-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 4rem 0 5rem;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(0, 229, 255, 0.14), transparent 28%),
+    radial-gradient(circle at 88% 18%, rgba(255, 255, 255, 0.08), transparent 24%),
+    linear-gradient(180deg, rgba(8, 14, 29, 0.98), rgba(3, 7, 18, 0.98));
+}
+
+.offer-hero--compact {
+  padding-bottom: 4.5rem;
+}
+
+.offer-hero-layout {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 3rem;
+  align-items: center;
+}
+
+.offer-copy {
+  display: grid;
+  gap: 1.4rem;
+}
+
+.offer-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.offer-visual-shell {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.offer-visual-svg {
+  width: 100%;
+  max-width: 640px;
+  height: auto;
+  filter: drop-shadow(0 28px 80px rgba(0, 229, 255, 0.08));
+}
+
+.offer-floating-card {
+  position: absolute;
+  right: 0;
+  bottom: 1.25rem;
+  max-width: 280px;
+  padding: 1.25rem 1.3rem;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(89, 243, 255, 0.24);
+  background: rgba(10, 20, 42, 0.88);
+  box-shadow: var(--shadow-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.offer-floating-label {
+  margin-bottom: 0.5rem;
+  color: var(--accent);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.offer-card-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.offer-card-grid--four {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.offer-card {
+  min-height: 100%;
+}
+
+.offer-grid-two {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2rem;
+  align-items: stretch;
+}
+
+.offer-proof-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.offer-proof-item {
+  padding: 1.1rem 1.2rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.offer-proof-item strong {
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.offer-proof-item p {
+  color: var(--text-muted);
+}
+
+.offer-cta-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 2.5rem 3rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(89, 243, 255, 0.16);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(0, 229, 255, 0.14), transparent 32%),
+    rgba(8, 17, 39, 0.86);
+  box-shadow: var(--shadow-glass);
+}
+
+.offer-cta-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
 .footer {
   border-top: 1px solid var(--border);
   background: rgba(1, 6, 18, 0.85);
@@ -1079,8 +1239,15 @@ h2 {
 
   .services-grid,
   .portfolio-grid,
-  .team-grid {
+  .team-grid,
+  .offer-card-grid,
+  .offer-card-grid--four {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .offer-hero-layout,
+  .offer-grid-two {
+    grid-template-columns: 1fr;
   }
 
   .hero-metrics {
@@ -1093,8 +1260,16 @@ h2 {
 }
 
 @media (max-width: 900px) {
+  .nav-wrapper {
+    position: relative;
+  }
+
   .nav-toggle {
     display: flex;
+  }
+
+  .offering-toggle {
+    margin-left: auto;
   }
 
   .nav-group {
@@ -1129,6 +1304,73 @@ h2 {
     grid-template-columns: 1fr;
   }
 
+  .offer-hero-layout {
+    text-align: center;
+  }
+
+  .offer-chip-row,
+  .offer-cta-actions,
+  .offering-actions,
+  .offering-links {
+    justify-content: center;
+  }
+
+  .offer-floating-card {
+    position: static;
+    margin-top: 1rem;
+    max-width: none;
+  }
+
+  .offering-nav {
+    position: absolute;
+    top: calc(100% + 0.9rem);
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(92vw, 360px);
+    padding: 1rem;
+    border-radius: 18px;
+    border: 1px solid rgba(232, 241, 255, 0.12);
+    background: rgba(6, 16, 34, 0.96);
+    box-shadow: var(--shadow-glass);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    margin-left: 0;
+    flex: initial;
+  }
+
+  .offering-nav.is-open {
+    display: flex;
+  }
+
+  .offering-links {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.35rem;
+  }
+
+  .offering-links .nav-link {
+    display: block;
+    padding: 0.85rem 0.95rem;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid transparent;
+  }
+
+  .offering-links .nav-link.is-active {
+    background: rgba(0, 229, 255, 0.08);
+    border-color: rgba(0, 229, 255, 0.14);
+  }
+
+  .offering-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.65rem;
+  }
+
   .hero-layout {
     text-align: center;
   }
@@ -1157,8 +1399,14 @@ h2 {
 }
 
 @media (max-width: 640px) {
+  .nav-wrapper {
+    gap: 0.9rem;
+    padding: 0.9rem 0;
+  }
+
   h1 {
-    font-size: 2.4rem;
+    font-size: 2.1rem;
+    line-height: 1.06;
   }
 
   .hero {
@@ -1171,8 +1419,70 @@ h2 {
 
   .services-grid,
   .portfolio-grid,
-  .team-grid {
+  .team-grid,
+  .offer-entry-grid,
+  .offer-card-grid,
+  .offer-card-grid--four {
     grid-template-columns: 1fr;
+  }
+
+  .offer-page {
+    padding-top: 4.8rem;
+  }
+
+  .offer-hero {
+    padding-top: 1.6rem;
+    padding-bottom: 3.6rem;
+  }
+
+  .offer-copy {
+    gap: 1.1rem;
+  }
+
+  .offer-copy .lede {
+    font-size: 1rem;
+  }
+
+  .offer-visual-svg {
+    max-width: 320px;
+  }
+
+  .hero-actions {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero-actions .btn {
+    width: min(100%, 280px);
+    margin: 0 auto;
+  }
+
+  .offer-cta-strip {
+    padding: 2rem 1.4rem;
+  }
+
+  .offer-cta-strip,
+  .offer-cta-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .offering-actions {
+    width: 100%;
+    gap: 0.55rem;
+  }
+
+  .offering-actions .btn {
+    width: 100%;
+    min-width: 0;
+    padding: 0.7rem 0.95rem;
+    font-size: 0.82rem;
+  }
+
+  .offering-call {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.08);
   }
 
   .form-grid {
