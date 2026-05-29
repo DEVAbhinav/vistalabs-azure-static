@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>10. You notice that the Google AdWords revenue for a</title><link rel="stylesheet" type="text/css" href="stylesheet.css"/></head>
+<body>
+<h1>10. You notice that the Google AdWords revenue for a</h1>
+<p>particular word has dropped in Spain for the last 30 days. This is an important one, so Google has asked you to figure out what has happened. How would you tackle this?</p>
+<p>1 “Startup Metrics for Pirates.” Dave http://www.slideshare.net/dmc500hats/startup-metrics-for-pirates-long-version 2 “Launching a Startup? Plan Your Marketing Dunford, April. 22 July 2013. From http://www.betakit.com/launching-a-startupplan-your-marketing-around-these-3-phases/ McClure. 8 August, 2007.</p>
+<p>Around These 3 Phases.”</p>
+<h2>Coding Questions Chapter 16</h2>
+<p>Thought you’d get away without having to code? Not so fast.</p>
+<p>Many companies, including Google, Amazon, and Microsoft, sometimes ask their PM candidates coding and algorithm questions. These questions can range from straightforward coding questions to more complex algorithm questions (which may or may not be followed up with a request to code).</p>
+<p>The good news is the expectations are generally lower than they would be for a developer. Many, but not all, interviewers will be satisfied with pseudocode.</p>
+<p>Note: Programming code can be difficult to read on a Kindle&apos;s narrow screen, since it causes line breaks in the wrong places. If your Kindle support landscape mode, you might want to try that. (This is supported with the Kindle Paperwhite.) Otherwise, try reading it on the desktop app (resize the application to have a larger page size and increase the words per line).</p>
+<h2>Who Needs To Code</h2>
+<p>Generally, the more recently you’ve coded, the more likely you are to be asked coding questions. Companies will often expect recent computer science graduates and current developers to code during their interviews.</p>
+<p>Never coded before? You’re probably off the hook for the coding aspects, but you still might be expected to explain an approach to solve a problem. It’s worth reading this section, just in case. Some of the terms might be beyond your knowledge, but you’ll still benefit from understanding how to approach these questions.</p>
+<h2>What You Need To Know</h2>
+<p>If you’re a recent graduate from a strong computer science program, you probably know most of what you need to know. Focus more on practicing interview questions than relearning actual knowledge, unless you discover major gaps.</p>
+<p>Here’s the quick list of what you should know.</p>
+<p>Note: we’re jumping right into big O notation to explain runtimes. If you don’t know big O or you are very vague on its meaning, you might want to jump ahead to read about it.</p>
+<h2>Data Structures</h2>
+<p>As its name suggests, a data structure is a structure for holding data. Depending on what you’re optimizing for, there are many different approaches to holding or organizing your data.</p>
+<p>In roughly descending order of importance for an interview, the common data structures are:</p>
+<h2>Arrays</h2>
+<p>An array is the most straightforward way to hold a set of objects. It stores items in a simple list of objects. Looking up an object is fast if you know the index, but slow otherwise. For example, it’s fast to retrieve the 12th person in a list, but slow to find all people named “Alex” (since you have to look through all people).</p>
+<p>In most languages, an array cannot “grow” in length after being created. You must specify the length of the array upfront and it cannot be changed after that.</p>
+<p>Good Practice Problems:</p>
+<h2>16.1 Given a sorted array of positive integers with an empty spot (zero) at the end, insert an element in sorted order.</h2>
+<p>jump to solution</p>
+<h2>16.2 Reverse the order of elements in an array (without creating a new array).</h2>
+<p>jump to solution</p>
+<h2>Hashtables</h2>
+<p>A hashtable (sometimes called a “dictionary” or a “hashmap”) allows you to map a “key” to a “value.” This key is often a number or string, and the value can be any type of object.</p>
+<p>This is a very useful data structure because it allows for very fast lookup. For the purposes of an interview, we generally assume that a hashtable is O(1) (constant time, regardless of the amount of data) to insert and look up elements, even though this isn’t 100 percent true. A poor implementation of a hashtable could have an O(N) look-up time.</p>
+<p>You might use it to map from a person’s ID number to some object with other information about them.</p>
+<p>Good Practice Problems 16.3 Given two lists (A and B) of unique strings, write a program to determine if A is a subset of B. That is, check if all the elements from A are contained in B.</p>
+<p>jump to solution 16.4 You are given a two-dimensional array of sales data where the first column is a product ID and the second column is the quantity. Write a function to take this list of data and return a new two-dimensional array with the total sales for each product ID.</p>
+<p>Example:</p>
+<p>211,4 262,3 211,5 216,6 Output:</p>
+<p>211,9 262,3 216,6</p>
+<h2>Trees and Graphs</h2>
+<p>Agraph graph is directed, an edge from might be able to “drive” from node Atree between any two nodes.</p>
+<p>this:</p>
+<p>Commonly, we work with binary search tree.</p>
+<p>where n is the number of nodes.</p>
+<p>jump to solution is a set of nodes which are connected through edges. Not all the nodes need to be connected—you could have two entirely separate subgraphs—and the edges can be either “directed” or “undirected.” A directed edge can be thought of as a one-way street, with an undirected edge being like a two-way street. If the vto w is not an edge from w to v. Therefore, you nto nodem, but not the other way around.</p>
+<p>is a type of graph in which any two nodes are connected through one, and only one, path. A tree will not have any cycles since there can only be one path A tree can come in many forms, but by far the most common is the binary tree. A binary tree is a tree where each node has only two child nodes. We call these nodes the left node and the right node. As with all trees, there cannot be any “cycles” on the tree (no paths from a node back to itself). Because of these restrictions, a binary tree can be represented in a strictly hierarchical fashion like binary search trees. A binary search tree is a tree in which all nodes in the left subtree are less than the node’s value, which is in turn less than the values of the all nodes in the right subtree. The above tree is a If a binary search tree is balanced (and usually we deal with balanced binary search trees), inserting an element, as well as finding an element, is O(log n)</p>
+<p>Good Practice Problems</p>
+<h2>16.5 Insert an element into a binary search tree (in order). You may assume that the binary search tree contains integers.</h2>
+<h2>16.6 Given a binary search tree which contains integers as values, calculate the sum of all the numbers.</h2>
+<h2>Linked Lists</h2>
+<p>Like a binary tree, a linked list is a data structure composed of nodes, where each node has a pointer to other nodes. In a singly-linked list, the node only has a pointer to its next node. In a doubly-linked list, the node has pointers to its previous node and its next node. It is generally considered highly problematic, and possibly a violation of the linked list structure, if the list has a cycle.</p>
+<p>Inserting a node into the front of a linked list can be done in O(1) time. However, if the list is sorted and you wish to insert the node in order, it will take O(N) time, where N is the number of nodes. This is because you must first find the right spot, and this requires searching through the whole list.</p>
+<p>Finding a node in a linked list is O(N), whether or not the list is sorted.</p>
+<p>Good Practice Problems</p>
+<h2>16.7 Insert a node into a sorted linked list (in order). (Don’t forget about what happens when the new element is at the start or end!)</h2>
+<h2>16.8 “Sort” a linked list that contains just 0s and 1s. That is, modify the list such that all 0s come before all 1s.</h2>
+<h2>Stack</h2>
+<p>A stack is a data structure which defines a precise order for how elements must be inserted and removed. When an element is added, or “pushed,” it is inserted jump to solution jump to solution jump to solution jump to solution on the top of the stack. When an element is removed, it is “popped” from the top of the stack.</p>
+<p>A stack is said to be a LIFO (last-in-first-out) data structure, since the last (most recent) element added is the first one to be removed.</p>
+<p>In this way, it acts like a stack of plates in real life. When you add a plate onto a stack of plates, you add it on the top. When you remove a plate, you always remove from the top.</p>
+<p>Inserting and removing from a stack is O(1). Finding an element with a particular value is not usually done, as it would require removing all the elements, one by one. A stack is not a good data structure choice if this is something you think you will need to do.</p>
+<p>Good Practice Problems</p>
+<h2>16.9 Write a function which takes a stack as input and returns a new stack which has the elements reversed.</h2>
+<h2>16.10 Write a function which numbers from a stack. You should return the original stack, not a new one.</h2>
+<h2>Queue</h2>
+<p>A queue is essentially the opposite of a stack. Rather than removing the newest item with a LIFO (last-in-first-out) principle, it removes the oldest item. It is said to be “FIFO” (first-in-first-out), since the first item you add will be the first one you remove.</p>
+<p>It acts like a queue (or line) in real life. When people are in a queue for movie tickets, the first person to get in line is the first person who will be served. This is of course how the data structure gets its name.</p>
+<p>Inserting (or “enqueuing”) and removing (or “dequeuing”) from a queue is O(1). As in a stack, finding an element would not ordinarily be implemented.</p>
+<p>Good Practice Problems jump to solution</p>
+<h2>removes all the even</h2>
+<p>jump to solution</p>
+<h2>16.11 Write a function to check if two queues are identical (same values in the same order). It’s okay to modify/destroy the two queues.</h2>
+<p>jump to solution</p>
+<h2>16.12 Write a function to remove the 13th element from a queue (but keep all the other elements in place and in the same order).</h2>
+<p>jump to solution</p>
+<h2>Algorithms</h2>
+<p>If you have a computer science degree, you know we could easily fill hundreds of pages with advanced algorithms. We won’t though, because these topics are rarely asked in interviews. Even developers are unlikely to be asked questions about, say, Dijkstra’s Algorithm, since interviewers care much more about your ability to create anewalgorithm than memorizing an existing one.</p>
+<p>Still, there are a few fundamental algorithms that are considered “fair game” for developers, and even for PMs. These come up frequently enough that it’s worth your time to remember them.</p>
+<h2>Sorting</h2>
+<p>The two most common good ways to sort an array are quick sort and merge sort. The others—bubble sort, insertion sort, radix sort, etc.—are less efficient in general or only work with specific assumptions.</p>
+<p>Merge Sort operates by sorting the left and right half of the array, and then merging the arrays. How does it sort the left and right halves? Through the merge sort algorithm (recursively). It takes the left half, divides that in half, sorts each part, and then merges those together. It then does the same on the right half. Merge Sort is O(n log(n)) in the average case and in the worst case. Quick Sort sorts data by choosing a random “pivot” element and rearranging the elements in the array based on whether they’re less than or greater than the pivot. Next, it tackles the elements on the left side of the pivot (all of which are less than or equal to the pivot) and the right half of the pivot (all of which are greater than the pivot). It applies the same strategy to each side: pick a pivot, rearrange, and then pick a new pivot on each side. Quick Sort is O(n log(n)) in the average case, but O(n worst case. The worst case will happen if a bad “pivot” (a very low or very high element) is continuously picked.</p>
+<p>Note that both algorithms have an approach of “divide in two parts and then reapply algorithm.” The other sorting algorithms are the naive implementations that you might do when, say, you’re trying to sort a stack of papers.</p>
+<p>Insertion Sort maintains a sorted sublist of elements (initially 0) at the beginning of the array. It then looks at the beginning of the unsorted sublist. If this element is bigger than the last element in the sorted sublist, it leaves it in place and just grows the sorted portion (since the element is already in the correct order). If it’s smaller, then it moves it into place in the sorted sublist. The unsorted portion shrinks by one each time. The algorithm then repeats this step for each element in the unsorted portion, until the array is fully sorted. Insertion Sort takes O(N) time in the best case (if the array is 2 already sorted), but O(N ) in the expected and worst case. Bubble Sort is a pretty straightforward algorithm. It iterates through the list repeatedly, swapping each pair of elements that are out of order. Once a full iteration happens without any swaps, the array is sorted. This takes O(N) in 2 the best case (if the array is totally sorted) and O(N worst case.</p>
+<p>It’s unlikely that you’ll be asked to implement one of these algorithms by name, but it’s still useful to understand how one might sort data. PMs are sometimes asked to sort a list of data. Those with a recent CS degree would likely be expected to implement one of the more optimal algorithms, while those without a CS degree may get away with the more naive approaches.</p>
+<p>Good Practice Problems</p>
+<h2>16.13 Given two sorted arrays, write a function to merge them in sorted order into a new array.</h2>
+<p>2 ) in the ) in the expected and jump to solution</p>
+<h2>16.14 Implement insertion sort.</h2>
+<h2>Binary Search</h2>
+<p>then search the left or right half of that sublist.</p>
+<p>n) time in the average and worst case.</p>
+<p>keep going. You could then continuously dividing the stack in half.</p>
+<p>understand. Many algorithms are based on binary search.</p>
+<p>Good Practice Problems</p>
+<h2>16.15</h2>
+<h2>value.</h2>
+<h2>16.16</h2>
+<h2>be 3.</h2>
+<p>jump to solution Binary search is an algorithm for locating a value in a sorted list (typically an array). In binary search, we compare the value to the midpoint of our list. Since our list is sorted, we can then determine whether the value should be located on the left side or the right side of this comparison element. We then search the left or right side, repeating this operation: compare to midpoint of the sublist, and Because we’re repeatedly dividing the data set in half, the algorithm takes O(log We often perform binary search in real life without realizing it. Imagine you had a stack of student exams sorted by first name. If you had a name like “Peter,” would you search starting from the top of the stack? Probably not. You would hop about halfway through, and then compare. If you see “Mary,” you know to just search that second half of exams by Binary search is a popular algorithm and therefore an important concept to</p>
+<h2>Implement binary search. That is, given a sorted array of integers and a value, find the location of that</h2>
+<p>jump to solution You are given an integer array which was sorted, but then rotated. It contains all distinct elements. Find the minimum value. For example, the array might be 6, 8, 9, 11, 15, 20, 3, 4, 5. The minimum value would obviously jump to solution</p>
+<h2>Graph Search</h2>
+<p>There are two common algorithms for searching a graph: depth-first search and breadth-first search.</p>
+<p>In depth-first search, we will completely search a node’s first child before going on to the second child, third child, and so on. For example, imagine a node with two children, A and B. If we are searching for a value v, we completely search A (and the nodes connected to A) before we check out B. It’s called “depth-first search” for this reason; we go deep before we go wide.</p>
+<p>In breadth-first search, we go wide before deep. If we start from an initial node R, we first check R and all the nodes immediately connected to R (let’s call these “children”). Then, we expand our search outwards, searching all the nodes connected to R’s children. We repeat this process until we find the value or until we’ve completed searching this entire [sub-]graph.</p>
+<p>In both algorithms, we need to be careful that we don’t wind up going in circles forever. Therefore, if there are cycles in the graph—that is, if there is more than one path to get from one node to another—then we need to mark the nodes as “already visited” to ensure that we don’t repeatedly search the same node. This will not be an issue for trees, as there are no cycles in a tree.</p>
+<p>Note that a graph can have two completely separate parts that are not connected. If this is the case, we need to perform our search algorithm on each component to ensure that we find the item we’re looking for.</p>
+<p>Good Practice Problems</p>
+<h2>16.17 Using depth-first search, check if a tree contains a value.</h2>
+<p>jump to solution</p>
+<h2>16.18 Write the pseudocode for breadth-first search on a binary tree. Try to be as detailed as possible.</h2>
+<p>jump to solution</p>
+<h2>Concepts Big O Notation</h2>
+<p>Big O notation is a way to express the efficiency of an algorithm. If you’re going literally, the language we use to express efficiency.</p>
+<p>2 probably takes O(N 2 the f(x) = x better implementation.</p>
+<p>of input (yikes!)?</p>
+<p>Suppose you have a function foo to be working with code, it is important that you understand big O. It is, quite Big O will allow you understand the tradeoff of different features. For example, if you were working on a social networking website and you wanted to show how many friends two people have in common, you might suggest looking through each of my friends to see if the friend is in your list of friends. This ) time, where N is the average number of friends a user has. That is, if you were to time how long this approach took as friends lists grew bigger and bigger, you would see that the graph of runtimes looks something like graph. This is going to be very costly. You’ll need to come up with a 2 f(x) = x Big O allows you to state this sort of information clearly and succinctly. It expresses how the execution time of a program scales with the input data. That is, as the input gets bigger, how much longer will the program take? Just a little bit longer? A lot longer? Will the time increase, say, exponentially with the size which does some processing on an array of size N. If foo takes O(N) time, then, as the array grows (that is, as N increases), the number of seconds foo takes will also increase in some sort of linear fashion.</p>
+<p>Carrier Pigeons vs. The Internet This is a true story.</p>
+<p>In 2009, a South African company named The Unlimited grew frustrated by their ISP’s slow internet and made news by comically showing just how bad it was. They “raced” a carrier pigeon against their ISP. The pigeon had a USB stick affixed to its leg and was taught to fly to an office 50 miles away. Meanwhile, the company transferred this same data over the internet to this same office. The pigeon won—by a long shot.</p>
+<p>What a joke this ISP was, right? A bird could transfer data faster than them. A bird!</p>
+<p>Their internet may or may not have been slow, but this experiment doesn’t say much. No matter how fast or slow your internet is, you can select an amount of data that will allow the internet or a pigeon to win.</p>
+<p>Here’s why:</p>
+<p>How long does it take a pigeon to fly 50 miles with a 10 GB USB stick attached to its leg? Let’s say it takes about 3 hours. Great.</p>
+<p>Now, how long does it take to transfer 10 GB on the internet? Let’s say you have pretty fast internet, and 10 GB only takes 30 minutes. Okay, then transfer 100 GB and you know it will take more than 3 hours.</p>
+<p>How long does it take that same pigeon to “transfer” 100 GB? Still 3 hours. The pigeon’s transfer speed doesn’t depend on the amount of data. USB sticks are pretty light but can fit a ton of data. (This is a bit of an oversimplification, of course. With enough data, you would need many USB sticks and eventually many pigeons.)</p>
+<p>So, just like that, the pigeon beat the internet!</p>
+<p>The pigeon’s transfer time is constant. The internet’s transfer time is proportional to the amount of data: twice the data will take about twice as much time.</p>
+<p>vary at all.</p>
+<p>varies proportionally with N.</p>
+<p>Real-Life Big O as O(N). As the distance fashion.</p>
+<p>What might not be O(N)?</p>
+<p>hands. The time it will take linear, or O(N), increase.</p>
+<p>since there are roughly N Dropping Constants You’re absolutely right. There still say that this is O(N In big O time, we’d say that the pigeon takes O(1) time. This means that the time it takes to transfer N gigabytes varies proportionally with 1. That is, it doesn’t The internet’s transfer speed is O(N). This means that the amount of time it takes Big O offers an equation to describe how the time of a procedure changes relative to its input. It describes the trend. It does not define exactly how long it takes, as procedures with larger big O time could be faster on specific inputs.</p>
+<p>Many “operations” in real life are O(N). Driving, for example, can be thought of N increases, driving time also increases in a linear Imagine we invited a bunch of people (including you) to a dinner party. If I invited twice as many people to the party, you will have to shake twice as many you to shake everyone’s hand can be expressed as O(N). If I double the amount of guests, it will take you twice as long. This is a Now, let’s suppose everyone wants to shake hands, but for some strange reason only one pair of people can shake hands at a time. As N increases, how much longer will this meet and greet take? Well, your work will take O(N) time—but 2 so will everyone else’s. The time it takes increases proportionally with O(N ), 2 pairs.</p>
+<p>2 If you are paying close attention, you might say, “But wait! There aren’t N pairs. People aren’t shaking hands with themselves, and you’re double counting every pair. There are really N(N-1)/2 pairs. So we should say O(N(N-1)/2).” 2 are N(N-1)/2 pairs (which is .5*N - .5N), but we 2 ).</p>
+<p>Big O is very hand-wavey, wishy-washy. We’re trying to express how the time changes in rough terms, not offer a precise calculation for the number of seconds something takes.</p>
+<p>As a result, we drop constant factors, so O(2N) is the same as O(N). We also drop the addition or subtraction of constants, so O(N - 5) becomes O(N). Put 2 together, these two factors mean that O(N 2 2 2 Think about it: if O(N ) and O(N + N ) are the same, then O(N between those two, should be treated as the same.</p>
+<p>This is a very important thing to understand. You should never express an algorithm as “O(2N).” This is not a “more precise” or “better” answer than O(N); it’s only a confusing one. A so-called “O(2N)” algorithm is O(N) and should be expressed as such.</p>
+<p>3 Which of the below expressions are equivalent to O(N )?</p>
+<p>3 O(3N )</p>
+<p>2 O(N(N + 3))</p>
+<p>3 O(N - 2)</p>
+<p>3 O(N + N lg N)</p>
+<p>3 2 O(N - N + N)</p>
+<p>2 O((N + 3)(N+1))</p>
+<p>All of them!</p>
+<p>Drop your constants and just keep the most important term.</p>
+<p>Multiple Variables Back to the handshaking example. Suppose we invited men and women to our dinner party. All the men already know each other and all the women already know each other. Therefore, people will only shake hands with the opposite gender.</p>
+<p>Assuming that we’re still in bizarro land where only one pair can shake hands at a time, how would you express how long this takes?</p>
+<p>2 Don’t say O(N ). Suppose we have 100 men and 1 woman. Adding one man will add one handshake, but adding one woman will add 100 handshakes. The time it takes does not actually increase proportional to the number of people squared.</p>
+<p>These are different “variables,” and it matters which one we increase. The correct way to express this is with two variables. If there are women, then our meet and greet takes O(M*W) time.</p>
+<p>2 + N) should be written as O(N ).</p>
+<p>2 + N), which is M men and W What if the women all knew each other, but the men knew no one at all? We 2 would then say that the meet and greet is O(M drop that extra M*W term; it’s a different variable, and it matters.</p>
+<p>Why This Matters (And Why It Doesn’t) Let’s suppose that we have two functions which process some data. The function 2 foo takes O(N) time and the function bar takes O(N (for example, a specific list of people), which one will be faster?</p>
+<p>We don’t know, actually.</p>
+<p>The runtime of foo will increase proportionally to O(N) and the runtime of bar 2 will increase proportionally to O(N ). So, eventually, the O(N exceed the O(N) time.</p>
+<p>However, we can’t make any determinations on a particular data set. The O(N could be faster on smaller data sets; it might not have yet exceeded the O(N) line. Plus, even on very large data—after this “overtaking” occurs—there could be exceptions. Maybe, when N is divisible by 1000, the special case and suddenly operate very quickly. We just don’t know.</p>
+<p>This doesn’t make big O useless; we just have to be very careful about how we apply it.</p>
+<p>Big O allows us to say things like, “In general, as our data set grows in size, this algorithm will be much, much faster than this other one.” It also allows us to say, + M*W). Note that we do not ) time. On a given data set 2 ) line should 2 )</p>
+<p>bar code will hit a 2 “You want to run this O(N ) algorithm, and N is the number of files on our network? Sorry, that’s just not going to work.” That matters—a lot.</p>
+<p>Moreover, it gives us a language for expressing efficiency that isn’t reliant on the system architecture or the technologies used. Without big O, we’d likely have to discuss efficiency in terms of seconds, which has little meaning when you are on a different system.</p>
+<p>Logs and Big O You might notice, as you’re doing problems, that we (and others) describe problems as O(log(N)) or O(lg(N)), but we aren’t particularly concerned about specifying whether we mean log (N) or log (N). That’s because it doesn’t 2 10 matter. The difference between one log and another is just a constant factor: log (n) equals log (n) / log (b). Since big O time doesn’t care about constant b k k factors, we don’t need to care about what our log base is.</p>
+<p>Big O Space and More The concept of big O can be used for much more than runtime. In fact, very commonly it is used to describe how much memory an algorithm uses.</p>
+<p>For example, suppose I have an algorithm that creates and initializes an NxN matrix:</p>
+<p>1. int[][] a = new int[N][N]; /* NxN matrix */ 2. for i from 0 to N { 3. for j from 0 to N { 4. a[i][j] = i + j 5. } 6. } 2 2 This algorithm takes O(N ) time and O(N ) space.</p>
+<p>Note: If you’ve taken an algorithms class, you might remember that, technically, big O refers to an upper bound. Anything that is O(N) could 2 also be said to be O(N ). To describe the exact runtime, we should be using big-theta.</p>
+<p>That is true, by the official mathematical definition of big O. However, outside of an algorithms class, this distinction has been forgotten about. Sample Problems Now, let’s move on to some examples (in pseudocode). Can you find the runtime of each of these problems?</p>
+<p>Example 1 Consider the following code to print the numbers from 0 to n.</p>
+
+</body>
+</html>

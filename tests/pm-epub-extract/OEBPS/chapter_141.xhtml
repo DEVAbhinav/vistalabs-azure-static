@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>6. Test and Fix: Just because there’s</title><link rel="stylesheet" type="text/css" href="stylesheet.css"/></head>
+<body>
+<h1>6. Test and Fix: Just because there’s</h1>
+<p>doesn’t mean you don’t test. You must test your code. In this case, you’ll walk through your code with the edge cases and normal cases. When you find bugs— and you will (bug-free code is interview)—think through what caused the bug, and then carefully fix it.</p>
+<p>Observe that the coding part is Step 5, not Step 1. Do not just get up to the whiteboard and start coding once you hear a problem. Take your time to brainstorm a solution with your interviewer. The algorithm part often takes up most of the interview, and sometimes even the entire interview.</p>
+<p>Remember: if you’re struggling to solve a problem, that’s problems are designed to be difficult.</p>
+<h2>Once you and your</h2>
+<h2>while you’re</h2>
+<h2>no computer</h2>
+<h2>unusual in an</h2>
+<p>normal. These</p>
+<h2>Developing an Algorithm</h2>
+<p>As we’ve said, many problems are difficult. How then do you come up with an algorithm? Here are a few strategies that work well:</p>
+<p>Use an Example: and try to solve it in your head. Get up, go to the whiteboard, and sketch out an example. For example, if you wanted to figure out how to merge two sorted arrays, draw an example of two specific arrays, like {1, 5, 8, 9} and {3, 5, 7, 10, 12}, and walk through how you would merge these. Use specific values (not just variable names like a1 and a2) and avoid special cases (such as the arrays having no elements in common). Optimize the Brute Force: force solution or a naive solution. It gives you a good starting point from which you can optimize. If the brute force is slow, think about Which steps of the algorithm are the optimizing those. Solve for Base Case: cases. Try solving it for 0, then 1, then 2, and so on. Can you see a pattern? Or, can you build the answers for these larger cases using the answers for a prior one? For example, if you’re trying to compute all subsets of {a, b, c}, you might be able to use subsets of {a, b} to do it. Think about Similar Problems: you’ve heard before, see if a similar approach will work for this problem. The more practice you do on solving technical questions, the easier it will be to come up with an algorithm. Simplify and Tweak: the size of the input, the type of input, the ranges, or another factor. Try tweaking or simplifying the problem in some way to see if you can solve this alternate version. Record Your Insights: discover during your problem solving. For example, maybe you’re looking for a value in a tree and you realize that it has to be on the right side of a left subtree; remember that insight.</p>
+<p>Whatever you do, approach the problem energetically. Don’t be discouraged when you struggle, and don’t give up. Interviewers want to see that you’ll push When you get a problem, don’t just sit there in your chair There is no shame at all in starting with a brute whyit’s slow. biggest time hogs? Focus on Sometimes, it’s easy to solve a problem for small If the problem sounds similar to others Interview problems come with certain constraints, in Some problems have key “insights” that you might</p>
+<h2>Additional Questions 16.19 Design an algorithm and write code to find all</h2>
+<p>3 3 3 3 solutions to the equation a + b = c + d where a, b, c, and d are positive integers less than 1000. If you wish, you can print only “interesting” solutions. That is, you 3 3 3 3 can ignore solutions of the form x + y = x + y and solutions that are simple permutations of other solutions (swapping left and right hand sides, swapping a and b, swapping c and d). For example, if you were printing all 3</p>
+<h2>solutions less than 20, you could choose to print only 2 +</h2>
+<p>3 3 3 3 3 3 3</p>
+<h2>16 = 9 + 15 and 1 + 12 = 9 + 10 .</h2>
+<p>jump to solution</p>
+<h2>16.20 Given a string, print all permutations of that string. You can assume the word does not have any duplicate characters.</h2>
+<p>jump to solution 16.21 In a group of people, a person is called a “celebrity” if everyone knows them but they know no one else. You are given a function knows(a, b) which tells you if person a knows person b. Design an algorithm to find the celebrity (if one exists).</p>
+<h2>For simplicity, you can assume that everyone is given a label from 0 to N-1. You need to implement a function int findCelebrity(int N).</h2>
+<h2>Observe that:</h2>
+<h2>(1) There can only be one celebrity at most (due to the definition of a celebrity). (2) The knows function is the only knows who.</h2>
+<p>16.22 You have an NxN matrix of characters and a list of valid words (provided in any format you wish). A word can be formed by starting with any character and then moving up, down, left, or right. Words do not have to be in a straight line (PACKING is a word below). You cannot reuse a letter for the same word, so GOING (in the grid below) would not be a word since it reuses the G. Design an algorithm and write code to print all valid words.</p>
+<p>L I G O E P N I N A C K S M A R</p>
+<h2>16.23 Given an array of integers (with both positive and negative values), find the contiguous sequence with the largest sum. Return just the sum.</h2>
+<h2>Example: Input: 2, -8, 3, -2, 4, -10</h2>
+<p>Output: 5 (i.e., {3, -2, 4})</p>
+<h2>way to look up who</h2>
+<p>jump to solution jump to solution jump to solution</p>
+<h2>Solutions</h2>
+<p>All solutions will be implemented with Java. If you don’t know Java, that’s okay. We’ll try to keep our code free of complex Java syntax so that you can focus on the main algorithm.</p>
+<p>Note: Programming code can be difficult to read on a Kindle&apos;s narrow screen, since it causes line breaks in the wrong places. If your Kindle support landscape mode, you might want to try that. (This is supported with the Kindle Paperwhite.) Otherwise, try reading it on the desktop app (resize the app to have a larger page size and increase the words per line).</p>
+<h2>16.1 Given a sorted array of positive integers with an empty spot (zero) at the end, insert an element in sorted order.</h2>
+<p>jump to question We can imagine that our array looks something like this (with a blank spot at the end):</p>
+<p>1 4 7 8 9 _ If we need to insert an element like 6, we can’t just insert it at the end. We are supposed to put it in order.</p>
+<p>1 4 6 7 8 9 This requires “shifting” all elements down to make space for 6 and then inserting it.</p>
+<p>There are two ways of approaching this problem.</p>
+<h2>Approach 1: Shift From Back, Then Insert</h2>
+<p>The first approach is to shift all the elements over and then insert the value x. We have to be careful though to not overwrite values as we’re inserting.</p>
+<p>Instead of shifting from the front, we can shift from the back moving forwards.</p>
+<p>1 4 7 8 9 _ We would first copy 9 into the empty spot. Then 8 into where 9 was. Then 7 into where 8 was, and so on. When we find the appropriate spot for x, we stop and insert x.</p>
+<p>1. boolean insert(int[] array, int x) { 2. /* Make sure input is valid.*/ 3. if (array[array.length - 1] != 0 || x &lt;= 0) { 4. return false; 5. } 6. 7. /* Start from last non-blank element, moving left and copying elements one by one. Stop when we’ve found the right spot for x or when we’ve hit the beginning of the array.*/ 8. int index = array.length - 2; // start from 2nd to last 9. while (index &gt;= 0 &amp;&amp; array[index] &gt; x) { 10. // shift over by one 11. array[index + 1] = array[index]; 12. 13. // move to next element 14. index = index - 1; 15. } 16. 17. /* Insert element wherever the above loop stopped.*/ 18. array[index + 1] = x; 19. 20. return true; 21. } We return true if we could insert the element or false if there was an error.</p>
+<h2>Approach 2: Swap Elements Moving Forward</h2>
+<p>Alternatively, we could iterate forwards through the array. elements in the array (the ones that are less than x), we don’t do anything. Those won’t be moved.</p>
+<p>However, when we find where x should be inserted, we swap x and the current element in the array. The value of x will now equal the old element in the array.</p>
+<p>When we get to the next element, we want to swap x for that value. We continue doing this for each element in the array until we get to the end.</p>
+<p>For the initial insert 6 into 2, 3, 7, 8, 9, _ set x = 6 start i at A[0] move i to A[1] move i to A[2] swap A[2] and x. A = {2, 3, 6, 8, 9, _} x = 7 swap A[3] and x. A = {2, 3, 6, 7, 9, _} x = 8 swap A[4] and x. A = {2, 3, 6, 7, 8, _} x = 9 swap A[5] and x. A = {2, 3, 6, 7, 8, 9} x = _ The following code implements this algorithm.</p>
+<p>1. boolean insert(int[] array, int x) { 2. /* Make sure input is valid.*/ 3. if (array[array.length - 1] != 0 || x &lt;= 0) { 4. return false; 5. } 6. 7. for (int i = 0; i &lt; array.length; i++) { 8. if (x &lt; array[i] || array[i] == 0) { 9. /* Swap x and array[i].*/ 10. int temp = array[i]; 11. array[i] = x; 12. x = temp; 13. } 14. } 15. 16. return true; 17. } Note that once the if statement on line 8 becomes true, it will always be true.</p>
+<p>Both algorithms will take O(N) time.</p>
+<h2>16.2 Reverse the order of elements in an array (without creating a new array).</h2>
+<p>At first glance, we might want to just create a second array, iterate over the elements in order, and insert them in reverse Unfortunately, the question says to not create a second array.</p>
+<p>Let’s look at any example.</p>
+<p>Original: 0, 1, 2, 3, 4, 5, 6 Reversed: 6, 5, 4, 3, 2, 1, 0 You might notice that by reversing the array, we’re putting the 0 where the 6 is and the 6 where the 0 is. Likewise, the 5 and the 1 are put in each other’s places. That is, we’re swapping values!</p>
+<p>Rather than create a second array, we can iterate through the array, swapping the left values with the corresponding values on the right. We only need to iterate through the left half of the array, since the right half of the array will have been taken care of already.</p>
+<p>1. void reverse(int[] array) { 2. int midpoint = array.length / 2; 3. for (int i = 0; i &lt; midpoint; i++) { 4. /* Get corresponding index on right side.*/ 5. int otherside = array.length - 1 - i; 6. 7. /* Swap left and right values.*/ 8. int temp = array[otherside]; 9. array[otherside] = array[i]; 10. array[i] = temp; 11. } 12. } Be very careful with the arithmetic on lines 2 and 5. Those are the sorts of things you should double and triple check in an interview.</p>
+<p>Both algorithms will take O(N) time.</p>
+<h2>16.3 Given two lists (A and B) of unique strings, write a program to determine if A is a subset of B. That is, check</h2>
+<p>jump to question order into the new array.</p>
+<h2>if all the elements from A are contained in B.</h2>
+<p>jump to question We’re told that the two lists contain unique strings, so we only need to check if all the elements in one list are contained in the other.</p>
+<h2>Approach 1: Brute Force</h2>
+<p>We can approach this by “brute force.” For each element in A, check if it is in B.</p>
+<p>As soon as we find an element a in A which is not in B, we can return false because we know A is not a subset. If we reach the end of A and haven’t returned yet, then we know we were able to find every element. We return true.</p>
+<p>1. boolean isSubsetBruteForce(String[] bigger, String[] smaller) { 2. for (String s : smaller) { 3. boolean found = false; 4. for (String b : bigger) { 5. /* found element.*/ 6. if (s.equals(b)) { 7. found = true; 8. break; 9. } 10. } 11. 12. /* s wasn’t found -&gt; not subset. */ 13. if (!found) { 14. return false; 15. } 16. } 17. 18. /* all elements found. */ 19. return true; 20. } This algorithm takes O(a*b) time, where a is the length of A and b is the length of B.</p>
+<h2>Approach 2: Hashtable</h2>
+<p>The reason that the earlier approach is so slow is that we have to search through B for each element. Wouldn’t it be nice if we could just look up if an element is in B?</p>
+<p>We can! This is what a hashtable allows us to do. We can build a hashtable of all the elements in B. Then, when we want to look up if an element is in B, we just use that hashtable.</p>
+<p>1. boolean isSubset(String[] bigger, String[] smaller) { 2. Hashtable&lt;String, Boolean&gt; hash = new Hashtable&lt;String, Boolean&gt;(); 3. 4. /* Record all the elements in the bigger list.*/ 5. for (String b : bigger) { 6. hash.put(b, true); 7. } 8. 9. /* Check if the bigger hashtable contains all the strings.*/ 10. for (String s : smaller) { 11. if (!hash.containsKey(s) || hash.get(s) != true) { 12. return false; 13. } 14. } 15. 16. return true; 17. } This algorithm takes O(a+b) time, where a is the length of A and b is the length of B. It takes O(b) additional memory to hold the hashtable.</p>
+<p>16.4 You are given a two-dimensional array of sales data where the first column is a product ID and the second column is the quantity. Write a function to take this list of data and return a new two-dimensional array with the total sales for each product ID.</p>
+<p>Example: Input:</p>
+<p>211,4 262,3 211,5 216,6 Output:</p>
+<p>211,9 262,3 216,6 jump to question The output for this method needs to be a list of product IDs and their total counts. We can do this in a straightforward manner by using a hashtable.</p>
+<p>We iterate through the list of (productID, quantity) pairs. For each value, we increment its entry in the hashtable or insert it if it’s not already in there. Finally, we convert the hashtable back into an array.</p>
+<p>1. int[][] totalSales(int[][] data) { 2. Hashtable&lt;Integer, Integer&gt; hash = new Hashtable&lt;Integer, Integer&gt;(); 3. 4. /* Compute total sales of each product.*/ 5. for (int i = 0; i &lt; data.length; i++) { 6. int productId = data[i][0]; 7. int quantity = data[i][1]; 8. if (hash.containsKey(productId)) { 9. quantity = quantity + hash.get(productId); 10. } 11. hash.put(productId, quantity); 12. } 13. 14. /* Convert hashtable back to array.*/ 15. int[][] totals = new int[hash.keySet().size()][2]; 16. int index = 0; 17. for (int key : hash.keySet()) { 18. totals[index][0] = key; 19. totals[index][1] = hash.get(key); 20. index = index + 1; 21. } 22. 23. return totals; 24. } If you don’t know the specific something that resembles workable code.</p>
+<h2>16.5</h2>
+<h2>integers.</h2>
+<p>search tree.</p>
+<p>values are put on the right.</p>
+<p>this until you don’t have a left or right child. Insert x there.</p>
+<p>1. boolean insert(TreeNode root, int data) { 2. if (root == null) { // failure 3. return false; 4. } 5. 6. if (data &lt;= root.data) { 7. if (root.left == null) { 8. /* found an open spot.*/ 9. root.left = new TreeNode(data); 10. } else { 11. /* recurse to insert node on left */ 12. return insert(root.left, data); 13. } 14. } else { 15. if (root.right == null) { commands for things like keySet and containsKey, don’t worry. Your interviewer shouldn’t care about things like this. The important thing is that you know how to translate an approach into This algorithm takes O(N) time, where N is the number of lines in the input.</p>
+<h2>Insert an element into a binary search tree (in order). You may assume that the binary search tree contains</h2>
+<p>jump to question This is a straightforward question that follows from the definition of a binary In a binary search tree, lesser values are put on the left of a node and greater The easiest way to implement this is recursively. Start with the root and compare the value you want to insert, x. If x is less than the root, then call insert on the root.left. When x is greater than the root, then call insert on the right side. Repeat 16. /* found an open spot. */ 17. root.right = new TreeNode(data); 18. } else { 19. /* recurse to insert node on right. */ 20. return insert(root.right, data); 21. } 22. } 23. 24. return true; // success 25. } The time to insert a node will depend on the height of the tree. If the tree is relatively balanced, it should have height O(log N) where N is the number of nodes in the tree. However, if the tree is very imbalanced (for example, basically a straight line down of nodes all on one side), the height could be as much as N.</p>
+<h2>16.6 Given a binary search tree which contains integers as values, calculate the sum of all the numbers.</h2>
+<p>If we approach problems from the right perspective, surprisingly simple. In this case, the “right” perspective means recursively.</p>
+<p>Suppose we want to compute the sum of the nodes in a tree like this:</p>
+<p>We could traverse the tree, collapse it into an array, and then compute the sum of those values. That’s a lot more complicated than is necessary.</p>
+<p>The simpler way is to think about the problem in terms of its subproblems. The jump to question some problems are sum of the entire tree is going to be the sum of the left subtree + sum of the right subtree + sum of the root.</p>
+<p>sum(tree_at_20) = sum(tree_at_10) + sum(tree_at_30) + value_at_node_20 Getting the sum at node 10 can then be defined in terms of its subproblems.</p>
+<p>sum(tree_at_10) = sum(tree_at_5) + sum(tree_at_15) + value_at_node_10 We can almost directly translate this into code.</p>
+<p>1. int sum(TreeNode root) { 2. if (root == null) { 3. return 0; 4. } 5. return root.data + sum(root.left) + sum(root.right); 6. } If we hit the end of a path (a null node), we return 0. If you prefer, we could instead do this:</p>
+<p>1. int sum(TreeNode root) { 2. if (root == null) { 3. return 0; 4. } 5. 6. int total = root.data; 7. if (root.left != null) { 8. total += sum(root.left); 9. } 10. 11. if (root.right != null) { 12. total += sum(root.right); 13. } 14.</p>
+
+</body>
+</html>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>1. int getMaxSum(int[] a) {</title><link rel="stylesheet" type="text/css" href="stylesheet.css"/></head>
+<body>
+<h1>1. int getMaxSum(int[] a) {</h1>
+<p>2. int maxSum = 0; 3. int runningSum = 0; 4. for (int right = 0; right &lt; a.length; right++) { 5. runningSum += a[right]; 6. if (maxSum &lt; runningSum) { 7. maxSum = runningSum; 8. } else if (runningSum &lt; 0) { 9. runningSum = 0; 10. } 11. } 12. return maxSum; 13. } At this point, we know that we’re done optimizing. This code runs in O(N) time and computes the longest sequence in a single pass of the array. We can’t do better than that.</p>
+
+</body>
+</html>

@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>7. Tell me about a time when you had a challenging</title><link rel="stylesheet" type="text/css" href="stylesheet.css"/></head>
+<body>
+<h1>7. Tell me about a time when you had a challenging</h1>
+<h2>interaction with a coworker.</h2>
+<h2>Estimation Questions Chapter 13</h2>
+<p>I promise you: no one actually cares if you know how many pizzas are sold every year in Manhattan. Even if you knew the “right” answer, it wouldn’t help you. In fact, it could distract you. This is one case where the correct answer isn’t necessarily the best one.</p>
+<p>Estimation questions are entirely about the process you take to solve them. It’s the journey, not the destination, so to speak. Interviewers will use these questions to evaluate your problem-solving skills as well as your quantitative skills.</p>
+<p>What’s the relevance to PMing, you might ask? Quite a bit, actually.</p>
+<p>Other than the obvious (an ideal PM is good at problem solving and good at math), being able to estimate things is actually a valuable skill. After all, when you need to figure out what you might be able to expect for the revenue from a given feature, estimations will come in handy.</p>
+<p>In life, as in the interview, you’ll be shooting for a number in the right ballpark. Precision is not expected.</p>
+<h2>Approach</h2>
+<p>Since estimation questions are fundamentally problem-solving questions, it should be no surprise that the key to these questions is the approach. You can ace these questions with a bit of structure (and some tips and tricks).</p>
+<h2>Step 1: Clarify the Question</h2>
+<p>You can’t answer a question that you don’t understand. That’s why it’s important to make sure you heard the question correctly and truly understand what’s being asked.</p>
+<p>For example, if you’re asked how much money Gmail makes in ads every year, you’ll first want to repeat the question back to your interviewer. This is especially important if you’re a non-native English speaker or if you think you might have misheard the question.</p>
+<p>Next, you’ll want to ask about anything that’s ambiguous. For example, in the above question, there’s actually a lot that’s ambiguous:</p>
+<p>Does “money” mean profit or revenue? If it’s profit, what are we including as costs? Do salaries count as a cost? How do we take into account the salary for a person who is only working on Gmail some of the time? Does Gmail include just Gmail.com? What about when companies use hosted Gmail for their domain? Do you mean the past year? Or averaging over all years since Gmail was launched? Is this for the US only, or is it worldwide?</p>
+<p>The answer to each of these questions would substantially affect your approach and result.</p>
+<h2>Step 2: Catalog What You Know (or Wish You Knew)</h2>
+<p>Once you understand what the question is, you’ll want to get a feel for what knowledge you have and what you need to compute. In some cases, you can ask your interviewer for key facts.</p>
+<p>Because there are multiple approaches that can be effective, what you know can guide your approach.</p>
+<p>For example, if you’re computing the revenue from Gmail annually in the US, you might know (or be able to ballpark) some of these facts:</p>
+<p>The population of the US. The percent of people in the US who own a computer. The unemployment rate in the US. Google’s annual revenue. The cost-per-click of a typical advertisement. The click-through rate of an advertisement. How well a Gmail or other embedded ad does as compared with a search advertisement. The number of ads shown on Gmail.</p>
+<p>You might be able to ask your interviewer for some of these facts, but be prepared to compute some of these too. If it’s something that many candidates would know and you don’t (like the US population), then it’s probably fair game to ask.</p>
+<p>When in doubt, leave your question open-ended: “Could you tell me the clickthrough rate of an advertisement, or would you prefer that I compute it?” If your interviewer pushes back by saying something like, “What do you think it is?” that’s a good sign that you might be relying on questions too much.</p>
+<p>Steps 2 and 3 are done somewhat in parallel. You can come back to your Fact List as you’re developing your equation.</p>
+<h2>Step 3: Make an Equation</h2>
+<p>This is possibly the most important part of the whole process. Here is where things come together—or fall apart.</p>
+<p>You need to form an equation to solve the problem. Doing so will help you make progress and show your interviewer that you can tackle tough problems head on.</p>
+<p>There are multiple approaches for any problem, but some are better than others. However, there’s often no “best” approach, as it depends on your knowledge and background.</p>
+<p>If you are calculating the annual revenue for Gmail in the US, this approach might work well:</p>
+<p>[# Gmail users in the US] x [annual clicks per user] x [average revenue per click]</p>
+<p>If you think about the above values mathematically, the components will multiply together to give you the revenue.</p>
+<p>This isn’t the only approach though. You could also try something like:</p>
+<p>[Google US revenue] x [% revenue from ads] x [% ad revenue from embedded (nonsearch) ads] x [% embedded ad revenue from Gmail]</p>
+<p>Before trodding down the path of one equation, it might be useful for you to brainstorm multiple equations and to have a plan of attack for each component. You don’t want to waste a bunch of time computing one part and then realize you aren’t able to compute the next one.</p>
+<h2>Step 4: Think About Edge Cases and Alternate Sources</h2>
+<p>Pause for a moment and think about the potential problems in your approach. This is a great opportunity to show your interviewer that you’re detail oriented and not afraid to challenge yourself. No one wants to hire someone who will just brush problems under the rug.</p>
+<p>For example, if you’re computing the number of pizza places in the US, have you considered college towns? Or, if you’re computing how much it would cost to wash all the windows in your city, have you taken into account broken windows (which you presumably won’t wash)? Or even car and bus windows?</p>
+<p>Is there some source that you haven’t considered? For example, if you were computing the number of guns sold every year, have you included illegal sales? Sales to police as well as consumers? What about race tracks using blanks?</p>
+<p>Think carefully about what situations might not fall into the framework you created in the previous step.</p>
+<p>Some candidates worry about exposing faults to your interviewer. Don’t! Your interviewer has likely asked this question dozens of times. He’ll know where the flaws are whether or not you point them out.</p>
+<h2>Step 5: Break It Down</h2>
+<p>At this point, you have a strong framework solving the problem. You have an equation written which lead you to an answer. You’ve even analyzed potential edge cases and issues.</p>
+<p>Now you want to find a way to solve each component of the equation. Let’s take a problem like computing the annual Gmail revenue in the US and assume we’re working off this equation:</p>
+<p>[# Gmail users in the US] x [annual clicks per user] x [average revenue per click]</p>
+<p>How can we compute the number of Gmail users in the US? If the interviewer won’t give us this information, we can compute it through an equation (yes, another one!) like this:</p>
+<p>[# Gmail users in the US] = Population of the US x % of People with email x % of email users who use Gmail Perhaps you recently heard something on the news about the number of Hotmail users. In that case, you could consider something like this:</p>
+<p>[# Gmail users in the US] = # Hotmail users x Ratio of Gmail users to Hotmail users Even an equation like this might work:</p>
+<p>[# Gmail users in the US] = # Smartphone users x [ % Android marketshare * % Android users w Gmail + % iPhone marketshare * % iPhone users w Gmail + % Blackberry marketshare * % Blackberry users w Gmail + % Windows Phone marketshare * % Windows phone users w Gmail ]</p>
+<p>The last equation might seem a bit crazy, but there’s some logic behind it: Gmail usage might be correlated with income, just as smartphone usage is.</p>
+<p>For each part of the main equation, construct a sub-equation. Keep each part of the original equation separate; don’t try to merge them into one mammoth equation. You might even draw a line down the page (or whiteboard) to keep these computations entirely separate.</p>
+<h2>Step 6: Review &amp; State Your Assumptions</h2>
+<p>We now have a series of equations and all that’s left to do is guess some numbers. You’ll need to rely on your intuition and prior life experience. You might have an idea of how often you see Gmail addresses versus other addresses.</p>
+<p>Be aware of your biases. Yes, everyone that you know has a smartphone, but is this really representative of the entire US? Probably not.</p>
+<p>Pick nice, round numbers, and state your assumptions clearly to your interviewer. Keep the list of assumptions you made in Step 2 updated, or find some way to clearly identify where you’ve made an assumption.</p>
+<p>Be sure to tell your interviewer why you’re making the assumptions you are. Your reasoning is more important than the precise number.</p>
+<h2>Step 7: Do the Math</h2>
+<p>All that is left is to actually multiply these values out. Remember that we’re shooting for the right ballpark, not absolute precision. Keep your numbers nice and round to make them easier to deal with.</p>
+<h2>Step 8: Sanity Check</h2>
+<p>Whew! You finally have an answer. Give that answer to your interviewer, but make sure you double check your work right after that. Make sure the value passes some quick sanity checks.</p>
+<p>For example, suppose you compute that Gmail’s US revenue is 5 billion dollars. Does that sound right to you? This would indicate that Gmail is making $16 per person in the US. This would be shockingly high given that most of the US doesn’t use Gmail.</p>
+<p>Go back through and check your work. If there’s an issue, it’s probably in one of the following areas:</p>
+<p>Original equation. Assumptions made. Arithmetic.</p>
+<p>It may help to do quick sanity checks on each part of the problem as well. If you found that Gmail had 150 million users in the US, this is a problem spot. It’s reasonable to believe that 50% of the US does not use Gmail.</p>
+<h2>Numbers Cheat Sheet</h2>
+<p>While these questions are not a test of facts, there are some very useful facts to remember.</p>
+<p>If there’s something else you need to know, you can ask your interviewer. In many cases though, you’d be expected to deduce the value.</p>
+<p>Approximate Value Data 300 million US Population 3 Average People per Household (US) 100 million # Households in the US 80 years Life Expectancy (US) 65 - 70 years Life Expectancy (World) 7 billion World Population 700 million European Population 4 billion Asia Population 9000 Hours in a Year 500,000 Minutes in a Year --- Company Revenue --- Company Profit --- # Users Note how all of these values are nice, round numbers. This is to make them easier to work with.</p>
+<p>Prior to your interview, try to look up the company’s revenue, profit, and user count. Of course, for some startups, some (or all) of these values could be zero.</p>
+<h2>Tips and Tricks</h2>
+<p>Estimation questions are heavy on math. Whether you’re good at mental math or not, these tips and tricks can make your life a bit easier.</p>
+<h2>Tip: Round Numbers</h2>
+<p>There are times when being a perfectionist warranted, but this is not such a time. After all, you’re going to be taking so many wild guesses and “guesstimates” that a bit of hand waving in your math really won’t make a difference. You’re just trying to get your answer in the right ballpark. Absolute precision will not do you any favors.</p>
+<h2>Example</h2>
+<p>The US population is 314 million (in 2012), but you should use 300 million There are 8760 hours in a year (8784 in a leap year), but using 9000 or 10,000 is probably close enough.</p>
+<h2>Trick: Rule of 72</h2>
+<p>Here’s a fun and useful tip: if you need to calculate how long until something doubles, divide 72 by the percent increase.</p>
+<p>That is, an investment, population, salary or other value increasing at x% per year will double after approximately 72/x years.</p>
+<p>This rule works fairly well (being within 5 or 10% of the true answer) for smaller values of x. However, even up through a 100% annual increase (which is doubling within a year), the result is still within 30% of the actual answer.</p>
+<p>x &lt; 20%: result is within 5% of actual answer. x &lt; 65%: result is within 20% of actual answer. x &lt; 100%: result is within 30% of actual answer. x &gt; 100%: result gets increasingly less accurate. However, this means the result doubling in less than a year.</p>
+<p>and being detail oriented is Of course, dividing 72 by something without a calculator is generally tricky. Using 70 or 75 will make your life easier and will generally be close enough.</p>
+<h2>Example</h2>
+<p>Salary Increase Interviewer: “A recent college graduate makes $65,000 per year. If she gets a raise of 9% per year, how long until her original salary has doubled?” Candidate: “We can apply the Rule of 72 here. 72 divided by 9 is 8. So it will take about 8 years.” Answer: The precise answer would be that it takes 8.05 years for her salary to double. After 8 years, her salary would have increased by 99%. Not bad for a bit of rounding!</p>
+<p>Population Growth Interviewer: “The 2012 census determined the US population to be about 300 million and increasing at a rate of 0.7% per year. If the rate holds steady, how long until the US population reaches 600 million?” Candidate: “We’re basically looking for the length of time before the US population doubles, so we can apply the Rule of 72 by dividing 72 by 0.7. What is that? Well, it’s certainly going to be between 72 and 2 x 72 (since 0.7 is between 1 and 1/2). We can guess about 100 years then, which would tell us that the population will double around year 2112.” Answer: Even with all this “loose” math, the candidate came fairly close. If he had divided 72 by 0.7, he would have gotten 103 years. The precise answer is 99.3 years. The candidate’s answer was reasonably close to both values, but even more importantly, he took a logical, quantitative approach. That’s what these problems are all about.</p>
+<h2>Trick: Orders of Magnitude</h2>
+<p>When multiplying two large numbers, it’s easy to make a mistake. This isn’t a big deal if you’re off by something in the 1s digit, but if you add an extra zero or forget a zero, you can wind up off by 10x or more. That It’s therefore useful to validate that your numbers are at least in the same order of magnitude as the expected result. One way to do this is the following: if you multiplied a and b together to get n, then the sum of the number of digits in the terms should be within one of the number of terms in the result.</p>
+<p>Or, more precisely:</p>
+<p>digits(a) + digits(b) = digits(a * b)</p>
+<p>Or:</p>
+<p>digits(a) + digits(b) = digits(a * b) + 1 For example, 823 * 1032 will have either 6 or 7 digits. (In actuality, it has 6 digits.) If you wind up with a number like 84936, you’ll know you’ve done something wrong.</p>
+<h2>Tip: Be Confident</h2>
+<p>How many times have you heard someone say, “Oh, I suck at math” or “Numbers are just not my thing”? Whether it’s true or not, an interview is not the time for such proclamations.</p>
+<p>Companies want to hire PMs who are confident—or who can at least pretend to be. Don’t let it show if you’re intimidated, and interviewer that you’re bad at math. Self-deprecating comments won’t do you any favors.</p>
+<h2>Tip: Label Your Units</h2>
+<p>Many people think of labeling units of a value (e.g., “4 meters”) as one of those pesky things that school teachers insisted on, but this habit will be invaluable here.</p>
+<p>A common mistake that candidates make is getting confused in their units. They write down “4” to indicate “4 meters,” but when it comes time to do some arithmetic, forget that it’s not in kilometers. And, unfortunately, this can be a very difficult “bug” to find.</p>
+<p>If you label all values with their units, you’ll be much better off in the long run.</p>
+<p>is a big deal.</p>
+<p>definitely don’t tell your</p>
+<h2>Tip: Consider Your Sources</h2>
+<p>Imagine you’re asked to compute how many bags of potato chips are sold every year. You will want to make sure you understand the different sources of sales. Potato chips are sold in several places:</p>
+<p>In stores, direct to consumers. In vending machines, direct to consumers. From distributors, to schools, hospitals, movie theaters, etc. And many other places!</p>
+<p>Multiple “sources” are common in market-sizing or revenue questions, but they can also come up in other ways.</p>
+<p>For example, suppose you were asked how many elevators were needed for a one-block long, one-block wide, 20-story building. You’ll probably chug along doing some work with the number of people in the building and how often they need to use the elevator. But have you thought about the freight elevator? That’s a “source” too!</p>
+<p>It’s okay in many cases to decide that your additional sources can be ignored, but you still want to call them out to the interviewer. This shows an attention to detail.</p>
+<h2>Tip: Keep Discrete Steps Discrete</h2>
+<p>The more organized you can be, the better. If your estimation question has several independent steps, you should try to compute them separately. If (or when!) you make a mistake, you’ll be able to come back to it, narrow in on the exact mistakes, and correct it with minimal hassle.</p>
+<h2>Example</h2>
+<p>Suppose that you are computing the amount of revenue Gmail earns in ads every year. Your approach might look like the following:</p>
+<p>$ = [# of Gmail users] x [# clicks / user] x [$ / click]</p>
+<p>When you work through this problem, you should compute each of these entirely separately. You might have a chart that looks like this:</p>
+<p>$ / click # clicks / user # of Gmail users … … … You’ll merge (or multiply) these values only in the very last step in the question.</p>
+<h2>Tip: Record Intermediate Steps</h2>
+<p>While some estimation questions are very short, most are fairly lengthy and require numerous calculations. It’s important that you write down what you’re doing as you’re doing it. You might need to come back to it later to correct your work or even to reuse a previously computed number.</p>
+<p>Record each step in an organized, easy-to-read fashion such that you can easily come back to any step. Think of this as “showing your work” to your math teacher. If your approach is so organized that another person could hypothetically follow it, it will be much easier for you to analyze where you might have gone wrong.</p>
+<h2>Tip: Record Your Assumptions</h2>
+<p>It’s not uncommon for your final answer to be wildly off. When this happens, there are two main reasons: either you made a math mistake (in which case being organized will help you locate it) or one of your assumptions was wrong.</p>
+<p>Therefore, the easier it is to identify where you made an assumption, the easier it will be to discover potential issues.</p>
+<p>Ideally, you would keep a list on the side of the page with all the assumptions you make. But, if that doesn’t work for you, at least circle each assumption as you make it. That will go a long way in letting you skim all your assumptions for issues.</p>
+<h2>Example Interview</h2>
+<p>Before practicing some questions on your own, it might be useful to understand how an interview like this might be conducted. We have provided a sample dialog below. We have added section headlines for ease in reading and to make it clearer where the candidate is applying certain steps.</p>
+<p>Interviewer: I’d like to start off with some estimation questions. How much money does the shampoo industry earn each year in the US?</p>
+<h2>Clarifying the Question</h2>
+<p>Candidate: Hmm. You’d like to know the money earned by the shampoo industry annually, correct? Are you looking for profit or revenue? Interviewer:Let’s do revenue. Candidate: Okay, great. And are we looking at just shampoo sales? Or are we considering conditioner and related products too? Interviewer:Just the shampoo is fine. Candidate: Alright. And when we say revenue, I’m assuming that we want to know how much the shampoo companies earn. That is, we’re not including the profits earned by resellers. Correct? Interviewer:Exactly. Candidate: Okay, great. I think I have what I need to proceed then. So just to reiterate, we’re looking for the total revenue pulled in annually from shampoo sales alone. May I have a few moments to jot down some thoughts? Interviewer:Sure, that’s fine.</p>
+<h2>Catalog What You Know (or Wish You Knew)</h2>
+<p>Candidate records the following data:</p>
+<p>Population of the US is 300 million. Life expectancy is 80 years. How much shampoo does each person use per wash?</p>
+<p>What is a store’s mark-up per item?</p>
+<h2>Make an Equation</h2>
+<p>Candidate comes up with one possible equation:</p>
+<p>[# people in the US] x [# shampoo bottles used per year per person] x [revenue / bottle]</p>
+<p>Candidate:Well, one way of doing this is to compute the number of bottles a given person goes through per year and then multiply that by the revenue per shampoo bottle. That will give us the annual revenue per person annually. We can then multiply that by the US population. Interviewer:Okay. Great. Candidate: I think that’s a fairly good approach, but we’ll want to break that down a bit more by market segment. Shampoo usage varies by gender as well as by age. Women, for example, spend more on shampoo than men since their hair is longer and since they tend to buy more expensive shampoo. So let’s tweak our approach a bit by calculating these separately for men and women. For women, we have the following table:</p>
+<p># women in the # shampoo bottles per woman revenue / bottle US 50% * US # showers per year / # showers per price per (female) bottle * (1 - store population shampoo bottle mark-up)</p>
+<p>For men, it’ll probably be easiest to just take what we’ve calculated for women and reduce it by a constant factor.</p>
+<p># men in the # shampoo bottles per man revenue / bottle US 50% * US # shampoo bottles per woman * (ratio of male shampoo price per (male) bottle * (1 population bottles to female shampoo bottles) - store mark-up)</p>
+<p>We could further break this down into “luxury” shampoo users vs. normal shampoo users, but I think this is close enough.</p>
+<h2>Review &amp; State Your Assumptions</h2>
+<p>Candidate: I probably use about a teaspoon of shampoo per shower, and I think there’s probably about 100 of those in a standard 12 ounce bottle. That should handle the middle part of the women’s equation. For the right side of the equation, we first need to know the price per bottle. I think shampoo usually runs about $5 / bottle for women, and probably pretty similar to that for men. I believe stores mark up products by about 50%, so we’ll work with that.</p>
+<p>Candidate adds the above bolded parts to the assumptions list.</p>
+<p>shampoo per shower (woman): 1 tsp. ratio of male shampoo usage to female: 50%. size of shampoo bottle: 12 ounces. tsps per 12 ounces: 100. price per (female or male) bottle: $5. store mark-up: 50%.</p>
+<h2>Do the Math</h2>
+<p>Candidate: From here, it’s basically just a matter of plugging in these values and doing the math. For women:</p>
+<p># women in the US # shampoo bottles per woman revenue / bottle 50% * US # showers per year / # showers per price per (female) bottle * (1 - store population shampoo bottle mark-up) 50% * 300 million (365 showers per year) / (100 showers $5 per bottle * 50% people per bottle) 150 million 3.5 bottles / year per person $2.5 per bottle This is about $9 per woman, and therefore about $1350 million—or $1.35 billion—on shampoo. Men have shorter hair, so we should expect that they use less shampoo. Let’s say men use about half as much shampoo as women. This means that men contribute about $650 million to shampoo revenue. Together, this is about $2 billion on shampoo. That doesn’t seem wildly off, but I’d like to double check some things. Interviewer:Okay, go ahead.</p>
+<h2>Sanity Check</h2>
+<p>Candidate: Well, here’s one potential issue. I calculated that women use 3.5 bottles of shampoo per year, where one bottle is about 12 ounces. This means that women are only using 3.5 ounces per month. This seems a bit low. When I travel with a travel-sized shampoo container, which is just about 3.5 ounces, this only lasts me about two weeks. I think my number for shampoo usage, for both men and women, is off by a factor of two. If I multiply this through, I’ll end up doubling the revenue. The annual revenue should be closer to $4 billion. Interviewer:Interesting. Okay. Is there anything else? Candidate: Well, come of think of it, I think I made an inappropriate assumption before. I assumed that everyone’s shampoo usage matched that of a typical adult (of their own gender), and I’m really not sure that’s true. I haven’t taken into account younger children or elderly / disabled people, or bald people. For that matter, I haven’t taken into account that there’s a bunch of people who just don’t wash their hair every day. We need to adjust the usage down quite a bit for this. Children below age 10 and the elderly / disabled account for about 20% of the US population. They will use far less shampoo than an adult (due to shorter hair or showering much less); let’s just assume it’s 0. This will account for 20% reduced shampoo usage. Let’s say that 20% of adult men are bald, so this accounts for 10% reduced shampoo usage. Now, what about people who don’t shower daily? Let’s assume that 20% of people don’t shower daily, and they instead shower every other day. This drops our shampoo usage by another 10%. If we add these together, we find that we need to reduce our shampoo usage by 40%. So instead of $4 billion, we’re back to a little over $2 billion in annual revenue. Interviewer:Excellent. Great work!</p>
+<h2>Sample Questions</h2>
+<p>Here are ten estimation questions which are similar to what you might see in an interview. We have provided solutions for these problems, but you should think of these solutions as being just one possible solution. There are often many correct solutions. Still, reading the solutions—after you’ve solved the problem yourself, of course—can be a useful way to explore alternative approaches or to remind you of details you might have missed.</p>
+<p>Many of these questions are ambiguous, and that’s okay! Part of your goal as a candidate is to resolve ambiguities prior to solving the question.</p>
+<p>To practice these questions, make appropriate assumptions ambiguity. In the solutions, we might make different assumptions. That’s okay; our solutions are notthe Where possible, we’ve obtained the “correct” answer from census or other data. We’ve provided this just for fun, but don’t worry too much if your answer (or our answer) is far off. It is useful to understand why your answer was far off— was it a logical error or an unreasonable assumption?—but the actual accuracy doesn’t matter.</p>
+<p>The first three questions are tackled with a more detailed step-by-step approach so that you can get the hang of things.</p>
+<h2>Question 1: How much does the US spend on dog food each year?</h2>
+<p>We’ll walk through this question step-by-step.</p>
+<h2>Step 1: Clarify the Question</h2>
+<p>What might be ambiguous in this question? Let’s think.</p>
+<p>Are we including wet food and dry food? (Assume yes.) Are we referring to the end consumer consumer.)</p>
+<p>to resolve any answer, but rather just one reasonable approach.</p>
+<p>here or stores? (Assume end There isn’t a whole lot that’s ambiguous here, so we can go ahead and proceed with these assumptions.</p>
+<h2>Step 2: Catalog What You Know (or Wish You Knew)</h2>
+<p>We know or wish to know the following:</p>
+<p>The US population is about 300 million people. Average people per household is 3. How many dog owners are there? A large dog eats once or twice a day, finishing most of a typical sized dog bowl. A medium-sized bag of dog food is about 20 lbs. How much does a bag of dog food cost? Most dogs eat dry food. Of people who own dogs, how many dogs do they own?</p>
+<h2>Step 3: Make an Equation</h2>
+<p>An equation like this will probably work:</p>
+<p>[# dogs in the US] x [amount of dog food eaten per year] x [cost per unit]</p>
+<p>We should pause here and think through this approach. Do we have a plan of attack for how we’ll compute each of these components? Are there any other approaches that could work?</p>
+<h2>Step 4: Think About Edge Cases and Alternate Sources</h2>
+<p>Our approach has mainly centered on the number of pets. Are dogs used anywhere else? Sure!</p>
+<p>Police forces. Race tracks. Farms.</p>
+<p>These probably don’t make a big difference though since the number of dog owners is so large.</p>
+<h2>Step 5: Break It Down</h2>
+<p>Computing the number of bags of dog food consumed per dog and the price per bag will probably be pretty straightforward. Computing the number of dogs is a bit trickier.</p>
+<p>We could just take a guess at the percent of American households with dogs, but it might be better to break down the number of households a bit better.</p>
+<p>Here are a few ways we could break down the number of dogs in the US:</p>
+<p>Divide households by income brackets. Divide households by suburban, urban, and rural. Divide households by age: 18 - 30, 30 - 60, 60+. We haven’t included children under 18 in there since they will be living with an adult. Divide households by apartment vs. house. Divide households by children: with children and without children.</p>
+<p>Any of these (and many others) could approaches—divide by age and then by income bracket—but that’s probably making it a bit too complicated.</p>
+<p>We’ll take the last approach and segment the problem into households with children and households without:</p>
+
+</body>
+</html>

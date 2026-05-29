@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>6. Repeat at step 4:</title><link rel="stylesheet" type="text/css" href="stylesheet.css"/></head>
+<body>
+<h1>6. Repeat at step 4:</h1>
+<p>// move p to next 1 0-&gt;0-&gt;0-&gt;0-&gt;1-&gt;1-&gt;1-&gt;0-&gt;1-&gt;0 p q // move q to next 0 0-&gt;0-&gt;0-&gt;0-&gt;1-&gt;1-&gt;1-&gt;0-&gt;1-&gt;0 p q // swap 0-&gt;0-&gt;0-&gt;0-&gt;0-&gt;1-&gt;1-&gt;1-&gt;1-&gt;0 p q // move p to next 1 0-&gt;0-&gt;0-&gt;0-&gt;0-&gt;1-&gt;1-&gt;1-&gt;1-&gt;0 p q // move q to next 0 0-&gt;0-&gt;0-&gt;0-&gt;0-&gt;1-&gt;1-&gt;1-&gt;1-&gt;0 p q // swap 0-&gt;0-&gt;0-&gt;0-&gt;0-&gt;0-&gt;1-&gt;1-&gt;1-&gt;1 p q In other words, p is always pointing to the first 1 and q is always pointing to the first out of place 0 (which is the first 0 after p). Whenever q finds a 0, we know the 0 is out of place. We swap its value with p and move p to the next node.</p>
+<p>This approach might be the least intuitive for some people, but—with the use of a helper function—it leads to fairly short code.</p>
+<p>1. void sort(LinkedListNode head) { 2. // find first 1 3. LinkedListNode p = nextNodeWithVal(head, 1); 4. 5. // find next 0 6. LinkedListNode q = nextNodeWithVal(p.next, 0); 7. 8. while (p != null &amp;&amp; q != null) { 9. q.data = 1; // swap 10. p.data = 0; 11. 12. // find next 1 13. p = nextNodeWithVal(p, 1); 14. 15. // find next 0 16. q = nextNodeWithVal(q, 0); 17. } 18. } 19. 20. LinkedListNode nextNodeWithVal(LinkedListNode n, int data) { 21. while (n != null &amp;&amp; n.data != data) { 22. n = n.next; 23. } 24. return n; 25. } These are just four ways of solving the problem, but there are many other ways too. These four approaches are all O(N).</p>
+<h2>16.9 Write a function which takes a stack as input and returns a new stack which has the elements reversed.</h2>
+<p>jump to question The most straightforward way to do this is to just create a new stack and pop the elements from the first stack onto the second. This will put the top element from the original stack on the bottom of the new stack.</p>
+<p>1. Stack&lt;Integer&gt; reverse(Stack&lt;Integer&gt; stack) { 2. Stack&lt;Integer&gt; reversed = new Stack&lt;Integer&gt;(); 3. while (!stack.isEmpty()) { 4. reversed.push(stack.pop()); 5. } 6. return reversed; 7. } The only problem with this is that our original stack gets completely emptied in the process. If this is a problem (ask your interviewer!), then you can use an additional stack to hold all the popped values.</p>
+<p>We push the popped values onto both the temp stack and the reversed stack. (These stacks will have the same elements in the same—reversed—order.) Once we’re done popping the elements from stack, we push them back from temp onto stack.</p>
+<p>1. Stack&lt;Integer&gt; reverseWithoutDestroying(Stack&lt;Integer&gt; stack) { 2. Stack&lt;Integer&gt; reversed = new Stack&lt;Integer&gt;(); 3. Stack&lt;Integer&gt; temp = new Stack&lt;Integer&gt;(); 4. 5. while (!stack.isEmpty()) { 6. int x = stack.pop(); 7. reversed.push(x); 8. temp.push(x); 9. } 10. 11. while (!temp.isEmpty()) { 12. stack.push(temp.pop()); 13. } 14. return reversed; 15. } Both approaches will have O(N) runtime. The second one will go through two passes instead of one, but constants don’t affect the big O time. This may seem surprising to some people, but remember: big O is not an expression of how</p>
+<h2>16.10 Write a</h2>
+<h2>stack, not a new one.</h2>
+<p>original order.</p>
+<p>back onto their original stack.</p>
+<p>1. void removeEvens(Stack&lt;Integer&gt; stack) { 2. Stack&lt;Integer&gt; temp = new Stack&lt;Integer&gt;(); 3. while (!stack.isEmpty()) { 4. int x = stack.pop(); 5. 6. /* Push evens onto new stack.*/ 7. if (x % 2 != 0) { 8. temp.push(x); 9. } 10. } 11. 12. /* Return odds to the stack.*/ 13. while (!temp.isEmpty()) { 14. stack.push(temp.pop()); 15. } 16. }</p>
+<h2>16.11 Write a</h2>
+<p>many seconds something actually takes. It expresses how the time scales (in this case, linear) as the size of the input gets longer and longer.</p>
+<h2>function which removes all the even numbers from a stack. You should return the original</h2>
+<p>jump to question For this problem, we can rely on the same instinct as the second approach from the prior problem: reversing something twice puts the elements back in their We can just pop the stack, element by element. If the element is odd (that is, not even), push it onto a new, temporary stack. Then, once we’re all done, push them This algorithm will take O(N) time. Observe that, since you have to go through every element, you can’t solve the problem any faster than this.</p>
+<h2>function to check if two queues are</h2>
+<h2>identical (same values in the same order). It’s okay to modify/destroy the two queues.</h2>
+<p>jump to question We are allowed to modify the two queues, which should give us a clue that we need to do just that.</p>
+<p>We can repeatedly remove the front of each linked list and compare the values. If the values are not equal, then we immediately return false.</p>
+<p>What happens when one list is emptied? That depends. If both lists are empty, then we know the linked lists are identical (nothing has failed yet). However, if only one list is empty and the other is not, then we know the lists were of different sizes. After all, we’re removing the elements in the same order.</p>
+<p>1. boolean isEqual(Queue&lt;Integer&gt; one, Queue&lt;Integer&gt; two) { 2. /* Remove elements one by one and check that they’re equal.*/ 3. while (!one.isEmpty() &amp;&amp; !two.isEmpty()) { 4. int oneHead = one.remove(); 5. int twoHead = two.remove(); 6. if (oneHead != twoHead) { 7. return false; 8. } 9. } 10. 11. /* We exited because one list was emptied. If the other list has elements left in it, then they must have been of different sizes. */ 12. if (!one.isEmpty() || !two.isEmpty()) { 13. return false; 14. } 15. return true; 16. } This algorithm takes O(N) time, where N is the length of the smaller list. Why the smaller? Because we exit as soon as either list is empty. That will happen to the smaller list first. It doesn’t matter how big the bigger list is; it won’t affect the runtime.</p>
+<h2>16.12 Write a function to remove the 13th element from a queue (but keep all the other elements in place and in the same order).</h2>
+<p>jump to question The approach to this problem depends on what you assume the queue data structure supports.</p>
+<p>If we get access to a Node class, then this is fairly easy. We just iterate through the nodes and delete it when we get to the 13th.</p>
+<p>However, if it’s a true Queue class, we don’t necessarily have access to the nodes like this. We may only have an add (to the back of the list) and remove (from the front of the list) method.</p>
+<p>We could create a second list object, but this isn’t actually necessary. Observe that if we continuously remove elements from the front and add them to the back, we’ll wind up with the exact same list.</p>
+<p>To remove the 13th element, we can therefore just remove each element and readd it—skipping the 13th element.</p>
+<p>We’ve implemented this code using a variable k, rather than hard coding the number 13. This is generally a good coding practice.</p>
+<p>1. boolean remove(Queue&lt;Integer&gt; queue, int k) { 2. if (k &lt; 0 || k &gt;= queue.size()) { 3. return false; 4. } 5. 6. int size = queue.size(); 7. for (int i = 0; i &lt; size; i++) { 8. int head = queue.remove(); 9. 10. /* everything but the kth element */ 11. if (i != k) { 12. /* remove from front and add to back */ 13. queue.add(head);</p>
+
+</body>
+</html>

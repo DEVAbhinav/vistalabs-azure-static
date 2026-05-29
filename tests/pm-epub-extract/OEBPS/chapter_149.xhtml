@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>14. } 15. } 16. return true; 17. }</title><link rel="stylesheet" type="text/css" href="stylesheet.css"/></head>
+<body>
+<h1>14. } 15. } 16. return true; 17. }</h1>
+<p>This algorithm takes O(N) time, where N is the number of nodes.</p>
+<h2>16.13 Given two sorted arrays, write a function to merge them in sorted order into a new array.</h2>
+<p>jump to question The most efficient way to tackle this is to use the fact that the arrays are sorted. We can merge them by taking successive elements repeatedly until we reach the end of both arrays. We maintain pointers to where we are in each array so that we can just easily move onto the next array.</p>
+<p>Let’s take an example of two arrays.</p>
+<p>A: 1 5 8 9 B: 2 4 9 10 12 We’ll start off with the p and q pointers at the beginning of the two arrays:</p>
+<p>A: 1 5 8 9 B: 2 4 9 10 12 p q A[p] is smaller than A[q], so we put A[p] into our result array. We then move p to the next value.</p>
+<p>A: 1 5 8 9 B: 2 4 9 10 12 p q Result: 1 We compare A[p] and A[q] again, putting the smaller element into the resulting array. We also need to keep track of where we are in the result array. We repeat this process until we are done with both arrays.</p>
+<p>A: 1 5 8 9 B: 2 4 9 10 12 p q Result: 1 2 A: 1 5 8 9 B: 2 4 9 10 12 p q Result: 1 2 4 A: 1 5 8 9 B: 2 4 9 10 12 p q Result: 1 2 4 5 A: 1 5 8 9 B: 2 4 9 10 12 p q Result: 1 2 4 5 8 A: 1 5 8 9 B: 2 4 9 10 12 q Result: 1 2 4 5 8 9 A: 1 5 8 9 B: 2 4 9 10 12 q Result: 1 2 4 5 8 9 9 A: 1 5 8 9 B: 2 4 9 10 12 q Result: 1 2 4 5 8 9 9 10 A: 1 5 8 9 B: 2 4 9 10 12 Result: 1 2 4 5 8 9 9 10 12 In an interview, it’s useful to walk through the example in this detail to reduce the number of mistakes you make.</p>
+<p>1. int[] mergeIntoNew(int[] A, int[] B) { 2. int p = 0; 3. int q = 0; 4. int index = 0; 5. int sz = A.length + B.length; 6. int[] merged = new int[sz]; 7. while (p &lt; A.length || q &lt; B.length) { 8. if (q &gt;= B.length || A[p] &lt;= B[q]) { 9. merged[index] = A[p]; 10. p = p + 1; 11. } else { 12. merged[index] = B[q]; 13. q = q + 1; 14. } 15. index = index + 1; 16. } 17. return merged; 18. } If you wanted to reduce the number of pointers we have, we can remove the</p>
+
+</body>
+</html>

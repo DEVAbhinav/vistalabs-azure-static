@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>15. return total; 16. }</title><link rel="stylesheet" type="text/css" href="stylesheet.css"/></head>
+<body>
+<h1>15. return total; 16. }</h1>
+<p>Regardless of which code you use, the runtime will be O(N), where N is the number of nodes in the tree.</p>
+<p>One way to see the runtime is to realize that sum will be called exactly once for each node in the tree. If there are O(N) calls to sum, then the runtime should be O(N).</p>
+<h2>16.7 Insert a node into a sorted linked list (in order). (Don’t forget about what happens when the new element is at the start or end!)</h2>
+<p>jump to question To insert a number in order into a linked list, we first need to find the right place to insert the node. Then, we need to actually insert it.</p>
+<p>The tricky bit is figuring out how to handle inserting a node into the front of the linked list.</p>
+<p>Imagine we call an insertInOrder method that looks like this, and it (for this particular case) needs to insert n into the front of the linked list:</p>
+<p>void insertInOrder(LinkedListNode nd, int value)</p>
+<p>Just inserting node n and having n.next point to nd is not enough. Whoever is using the linked list doesn’t know that the real head of the linked list has been updated from nd to n. They only have a reference to nd.</p>
+<p>Therefore, in an insert method, you need to return the new head of the linked list. Most of the time, the head will be the same as it was before you called insert. Sometimes it will change though, and you need to notify the caller of this.</p>
+<p>1. LinkedListNode insert(LinkedListNode head, int data) { 2. /* Create new node.*/ 3. LinkedListNode node = new LinkedListNode(data); 4. 5. /* If being insert into front of linked list, then insert node and return new head.*/ 6. if (head == null || data &lt; head.data) { 7. node.next = head; 8. return node; 9. } 10. 11. /* Find the right spot (in order) to insert the node by traversing through the list.*/ 12. LinkedListNode current = head; 13. while (current.next != null &amp;&amp; data &gt; current.next.data) { 14. current = current.next; 15. } 16. 17. /* Insert node.*/ 18. node.next = current.next; 19. current.next = node; 20. 21. /* Return old head. It hasn’t moved.*/ 22. return head; 23. } This algorithm takes O(N) time, where N is the number of nodes.</p>
+<h2>16.8 “Sort” a linked list that contains just 0s and 1s. That is, modify the list such that all 0s come before all 1s.</h2>
+<p>jump to question There are many ways of doing this problem.</p>
+<h2>Approach 1: Build Two Linked Lists</h2>
+<p>One of the simplest ways is to build a “zeros list” and a “ones list” and then join them at the end.</p>
+<p>1. LinkedListNode sort(LinkedListNode head) { 2. LinkedListNode zeroHead = null; 3. LinkedListNode zeroTail = null; 4. LinkedListNode oneHead = null; 5. LinkedListNode oneTail = null; 6. LinkedListNode n = head; 7.</p>
+<p>8. while (n != null) { 9. LinkedListNode next = n.next; 10. n.next = null; 11. if (n.data == 0) { 12. /* Add to end of zeros list.*/ 13. if (zeroHead == null) { 14. zeroHead = n; 15. } else { 16. zeroTail.next = n; 17. } 18. zeroTail = n; 19. } else { 20. /* Add to end of ones list.*/ 21. if (oneHead == null) { 22. oneHead = n; 23. } else { 24. oneTail.next = n; 25. } 26. oneTail = n; 27. } 28. n = next; 29. } 30. 31. /* Join lists and return.*/ 32. if (zeroTail == null) { 33. oneTail.next = null; 34. return oneTail; 35. } else { 36. zeroTail.next = oneHead; 37. return zeroHead; 38. } 39. } Observe that we need to return the new head of the linked list, as it might have changed.</p>
+<h2>Approach 2: Grow Left and Right</h2>
+<p>The prior approach gets lengthy because we need to keep track of the front and back of two different lists, which requires constantly updating four different variables.</p>
+<p>Four variables aren’t actually necessary though. All the problem has asked us to do is to put all the 0s before the 1s. We don’t have to keep the nodes in the same order that they were in originally.</p>
+<p>Therefore, we can instead just keep track of the head and tail of the (new) linked list. When we get a new 0, we insert it at the very front. When we get a new 1, we insert it at the very end. This will keep all 0s before every 1.</p>
+<p>1. LinkedListNode sort(LinkedListNode n) { 2. LinkedListNode head = n; 3. LinkedListNode tail = n; 4. 5. // start with second element 6. n = n.next; 7. while (n != null) { 8. LinkedListNode next = n.next; 9. if (n.data == 0) { 10. // 0 -&gt; add to front 11. n.next = head; 12. head = n; 13. } else { 14. // 1 -&gt; add to tail 15. tail.next = n; 16. tail = n; 17. } 18. n = next; 19. } 20. 21. // ensure tail doesn’t point anywhere 22. tail.next = null; 23. 24. return head; 25. } We again need to return the new head since it might have changed.</p>
+<h2>Approach 3: Count the Zeros</h2>
+<p>We’re not actually required to use the same actual objects that we were given. If we moved values, instead of nodes, that would fit the problem requirements.</p>
+<p>Therefore, we can just iterate through the linked list once, counting the number of 0s. Then, we iterate through it again, setting the first k values to 0 and the rest to 1.</p>
+<p>1. void sort(LinkedListNode head) { 2. int k = 0; 3. 4. /* Count the number of 0s.*/ 5. LinkedListNode n = head; 6. while (n != null) { 7. if (n.data == 0) { 8. k = k + 1; 9. } 10. n = n.next; 11. } 12. 13. /* Set first k values to 0.*/ 14. n = head; 15. while (n != null) { 16. if (k &gt; 0) { 17. n.data = 0; 18. k = k - 1; 19. } else { 20. n.data = 1; 21. } 22. n = n.next; 23. } 24. } In this approach, we’re moving values, not nodes. The actual reference to the head won’t change, so we don’t need to return anything.</p>
+<h2>Approach 4: Swap the Values</h2>
+<p>Since we only need to move the values, we can also just iterate through the linked list, swapping the 0s and 1s as we find them.</p>
+<p>This approach works by two pointers, p and q. The p pointer looks for 1s and the q pointer looks for 0s. When they find their values, they swap.</p>
+
+</body>
+</html>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>2. The knows</title><link rel="stylesheet" type="text/css" href="stylesheet.css"/></head>
+<body>
+<h1>2. The knows</h1>
+<h2>knows who.</h2>
+<h2>people, a person is called a “celebrity” if everyone knows them but they know no one knows(a, b) which tells you b. Design an algorithm to find</h2>
+<h2>For simplicity, you can assume that everyone is given a label from 0 to N-1. You need to implement a function int</h2>
+<h2>There can only be one celebrity at most (due to the</h2>
+<h2>function is the only way to look up who</h2>
+<p>jump to question Let’s start with a simple brute force approach. We can iterate through all possible people, checking if this person is a celebrity. As soon as we find a person who fits the criteria of being a celebrity, we can return this person.</p>
+<p>1. int findCelebrity(int people) { 2. for (int i = 0; i &lt; people; i++) { 3. if (isCelebrity(people, i)) { 4. return i; 5. } 6. } 7. return -1; 8. } 9. boolean isCelebrity(int people, int candidate) { 10. for (int i = 0; i &lt; people; i++) { 11. if (i != candidate) { 12. if (knows(candidate, i) || !knows(i, candidate)) { 13. return false; 14. } 15. } 16. } 17. return true; 18. } 2 This takes O(N ) time since we are potentially calling knows(a, b) on every pair of people.</p>
+<p>Let’s see if we can do this faster.</p>
+<p>Consider a call to knows for two people, x and y. The result of knows(x, y) will either be true or false. What can we conclude from these results?</p>
+<p>Suppose knows(x, y) = true. This means that x knows y. In this case, we know that x is not a celebrity. Celebrities can’t know anybody. Suppose knows(x, y) = false. This means that x does not know y. In this case, we know that y is not a celebrity since everyone must know the celebrity.</p>
+<p>This gives us a very interesting learning: given two people who are both potential celebrities, we can always eliminate one person as the celebrity.</p>
+<p>Note: Now is a good time to pause to try to figure out the rest of the solution. If we can always eliminate one person as the celebrity, then we should be able to trim down our list of N people to just one potential celebrity in N-1 calls to knows. At that point, we can then verify that candidate really is the celebrity (since there could be no celebrities) by calling knows again for candidate and every other person.</p>
+<p>This can be done in two passes:</p>
+
+</body>
+</html>

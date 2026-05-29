@@ -586,8 +586,7 @@ function buildChapters(blocks, splitMode) {
 
         if (splitMode === 'auto') {
             // Auto: Split on strong chapter titles, or on any h1 IF the chapter is already fairly long
-            const isStrongChapter = /^(chapter|part|section|prologue|epilogue|act|scene|appendix)\b/i.test(block.text) || 
-                                    /^\d{1,3}\.\s+\S/.test(block.text);
+            const isStrongChapter = /^(chapter|part|section|prologue|epilogue|act|scene|appendix)\b/i.test(block.text);
             if (block.type === 'h1' && escaped.length < 100) {
                 if (isStrongChapter || currentChapterTextLength > 1500) {
                     shouldSplit = true;

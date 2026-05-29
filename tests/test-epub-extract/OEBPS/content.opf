@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="http://www.idpf.org/2007/opf" unique-identifier="BookID" version="3.0">
+  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <dc:title>Vehicle Guide Test Book</dc:title>
+    <dc:creator>Vista Labs Auto-Test</dc:creator>
+    <dc:language>en</dc:language>
+    <dc:identifier id="BookID">urn:uuid:02d4a440-1959-413f-84ab-31a7fd98a4d7</dc:identifier>
+    <meta property="dcterms:modified">2026-05-29T11:53:15Z</meta>
+  </metadata>
+  <manifest>
+    <item id="cover-page" href="cover.xhtml" media-type="application/xhtml+xml"/>
+    <item id="cover-image" href="images/cover.jpg" media-type="image/jpeg" properties="cover-image"/>
+    <item id="toc" href="toc.xhtml" media-type="application/xhtml+xml" properties="nav"/>
+    <item id="style" href="stylesheet.css" media-type="text/css"/>
+    <item id="chapter_1" href="chapter_1.xhtml" media-type="application/xhtml+xml"/>
+  </manifest>
+  <spine>
+    <itemref idref="cover-page"/>
+    <itemref idref="toc"/>
+    <itemref idref="chapter_1"/>
+  </spine>
+</package>

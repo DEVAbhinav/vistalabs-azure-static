@@ -1,0 +1,30 @@
+body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    margin: 1.5em 1em;
+    padding: 0;
+    line-height: 1.6;
+    font-size: 1em;
+    color: #111;
+    background: #fff;
+}
+p {
+    text-indent: 1.5em;
+    margin: 0 0 0.5em 0;
+    text-align: justify;
+    orphans: 2;
+    widows: 2;
+}
+h1 {
+    font-size: 1.8em;
+    font-weight: bold;
+    text-align: center;
+    margin: 2em 0 1em;
+    page-break-before: always;
+}
+h2 {
+    font-size: 1.4em;
+    font-weight: bold;
+    margin: 1.5em 0 0.8em;
+}
+.cover-wrapper { text-align: center; page-break-after: always; margin: 0; padding: 0; }
+.cover-img { max-width: 100%; height: auto; max-height: 95vh; }

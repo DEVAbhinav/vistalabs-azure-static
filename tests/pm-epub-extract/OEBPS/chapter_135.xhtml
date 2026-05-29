@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>1. int i = N; 2. while i &amp;gt;= 1 { 3. print i 4. i = i / 2 5. }</title><link rel="stylesheet" type="text/css" href="stylesheet.css"/></head>
+<body>
+<h1>1. int i = N; 2. while i &gt;= 1 { 3. print i 4. i = i / 2 5. }</h1>
+<p>We need to think about what this for loop will do. This for loop will do something (print a value) and then continuously divide by 2 until it gets below 1.</p>
+<p>How many times can we divide N by 2 until we get below 1 and the while loop terminates? If we approached this in reverse, we could say: how many times can x we multiply 1 by 2 until we get to N? This would be the value x, where 2 = n. This for loop, therefore, iterates x times.</p>
+<p>Now we just need to solve for x:</p>
+<p>x 2 = n x log(2 ) = log(n)</p>
+<p>x log(2) = log(n) x = log(n) / log(2)</p>
+<p>So, this code operates in O(log(n))time.</p>
+<p>This is a good thing to remember: if something continuously divides in half, it is O(log(N)) time.</p>
+<h2>Recursion</h2>
+<p>If a function can call other functions, then it can call itself. This is recursion.</p>
+<p>Recursion can be a useful strategy to solve a large number of problems. It works well when the solution to a problem can be defined in terms of the solutions to subproblems.</p>
+<p>For example, consider the factorial (n-1) * (n-2) * … * 1. We could also say that n! is n * (n-1)!.</p>
+<p>This leads to an extremely short bit of code to compute n!.</p>
+<p>1. int factorial(int n) { 2. if (n == 0 or n == 1) { /* base case */ 3. return 1; 4. } else { 5. return n * factorial(n-1); 6. } 7. } The base case (or terminating condition) is extremely important. Without it, the function would run forever.</p>
+<p>Here’s another example of a recursive function. This computes the nth fibonacci number. As you may recall, the nth fibonacci number, 2).</p>
+<p>1. int fibonacci(int n) { 2. if (n == 0) { 3. return 0; 4. } else if (n == 1) { 5. return 1; 6. } else { 7. return fibonacci(n-1) + fibonacci(n-2); 8. } 9. } This is a natural function to implement recursively, as the nth fibonacci numbers are defined by their smaller problems.</p>
+<p>Memory Usage problem. What is n! (n factorial)? n! is n * f(n), is f(n-1) + f(n- Any problem that can be solved recursively can also be solved iteratively (nonrecursively), although sometimes doing so is much more complicated. However, recursion comes with a drawback, which is memory usage.</p>
+<p>Recall this example:</p>
+<p>1. int factorial(int n) { 2. if (n == 1) { /* base case */ 3. return 1; 4. } else { 5. return n * factorial(n-1); 6. } 7. } This takes O(N) time, and will on any solution. What is its memory usage? Its memory usage will be O(N) too (assuming no fancy optimizations by the compiler).</p>
+<p>The method factorial(n) calls factorial(n-1), which calls factorial(n-2), and so on. Note that factorial(n) does not complete until factorial(n-1) completes, which in turn doesn’t complete until factorial(n-2).</p>
+<p>Therefore, at one point in time, we have n functions in operation at once, on the “call stack.” factorial(0) factorial(1) ... factorial(n-1) factorial(n)</p>
+<p>Each one of those takes up some memory. Therefore, at one point in time, n chunks of memory are being used. This implemented recursively, is O(N) time and O(N) memory.</p>
+<p>This is the drawback of recursion: the recursive calls take up memory.</p>
+<p>means that this program, when</p>
+<h2>How You Are Evaluated</h2>
+<p>Some coding and algorithm problems can be quite straightforward, but a good number are actually very challenging. They’re challenging for good reason: easy problems wouldn’t help interviewers distinguish great candidates from just so-so candidates.</p>
+<p>What many candidates don’t realize though is that you aren’t expected to solve a tough problem immediately. It’s great if you can, but it’s often not realistic. A tough problem can often take the entire interview to solve, even with some guidance from the interviewer.</p>
+<p>Evaluation of your performance is not about whether you got the problem “right” or not. This has little meaning. Rather, the evaluation is a lot more qualitative and, frankly, subjective:</p>
+<p>How willing were you to solve the problem? If you get scared and give up, that’s a red flag. Interviewers want candidates who are excited about solving hard problems. They tend to make good employees. How quickly did you solve it? How optimal was your algorithm? How did you approach the problem? How much help did you need? How clean was your code? How was your communication in discussing the problem? How did you react to feedback and guidance from the interviewer?</p>
+<p>None of these aspects are yes/no decisions.</p>
+<p>An interviewer is not given metrics to decide how quick is “quick” on a problem, or how many bugs constitutes “buggy.” How then does she determine how you did?</p>
+<p>She determines performance by comparing you—indirectly—to other candidates. That is, the first time she asks the question she doesn’t have a good feel for whether X minutes is fast or slow. As she asks more and more people the same question, it starts becoming clearer. When other people typically take 20 30 minutes to solve a question and you get it in 10 minutes, she knows that you solved it quickly.</p>
+<p>Because the evaluation is relative, it’s also extremely difficult to judge by yourself how you did in an interview. You may feel you struggled, but you don’t know how much other candidates struggled.</p>
+<h2>How To Approach</h2>
+<p>problem.</p>
+<p>The following approach works well:</p>
+
+</body>
+</html>

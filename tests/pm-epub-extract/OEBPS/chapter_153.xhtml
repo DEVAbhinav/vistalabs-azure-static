@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>1. Find the candidate. 2. Verify that the candidate is the celebrity.</title><link rel="stylesheet" type="text/css" href="stylesheet.css"/></head>
+<body>
+<h1>1. Find the candidate. 2. Verify that the candidate is the celebrity.</h1>
+<p>Before diving into the code, let’s think about how we implement the first pass: finding the candidate.</p>
+<p>We could have a list that we remove people from as they are eliminated. Shifting elements around in a list is time consuming and, frankly, more work than necessary.</p>
+<p>If we imagine our calls to knows, we can think about our algorithm as kicking things off with 0 as the candidate. When we call knows(0, 1), we will either eliminate 0 or 1. If we eliminate 0, then candidate becomes 1. We then move on to knows(candidate, 2).</p>
+<p>Step 2 uses the same isCelebrity method that we implemented earlier.</p>
+<p>1. int findCelebrity(int people) { 2. int candidate = findCandidate(people); 3. if (isCelebrity(people, candidate)) { 4. return candidate; 5. } 6. return -1; 7. } 8.</p>
+<p>9. int findCandidate(int people) { 10. int candidate = 0; 11. for (int i = 0; i &lt; people; i++) { 12. /* If candidate gets ruled out, move on to i.*/ 13. if (knows(candidate, i)) { 14. candidate = i; 15. } 16. } 17. return candidate; 18. } 19. 20. boolean isCelebrity(int people, int candidate) { 21. for (int i = 0; i &lt; people; i++) { 22. if (i != candidate) { 23. if (knows(candidate, i) || !knows(i, candidate)) { 24. return false; 25. } 26. } 27. } 28. return true; 29. } This algorithm takes O(N) time.</p>
+<p>16.22 You have an NxN matrix of characters and a list of valid words (provided in any format you wish). A word can be formed by starting with any character and then moving up, down, left, or right. Words do not have to be in a straight line (PACKING reuse a letter for the same word, so below) would not be a word since it reuses the G. Design an algorithm and write code to print all valid words.</p>
+<p>L I G O E P N I N A C K S M A R</p>
+<h2>is a word below). You cannot GOING (in the grid</h2>
+<p>jump to question Let’s think about this algorithm step by step. We need to find all words that start with each letter. We can just iterate through each letter on the grid, kicking off a search for words that start with each letter.</p>
+<p>But how do we find all words that start with a particular letter, like P?</p>
+<p>From P, we can move either up, down, left, or right. This means that we can think about all words that start with P in the grid as being:</p>
+<p>all words that start with P = all words that start with PI + all words that start with PE + all words that start with PA + all words that start with PN This leads to a natural recursive algorithm. We recurse in each direction (up, down, left, and right), building a word as we go. Whenever we have a complete word, we print it and continue with the recursion.</p>
+<p>One tricky part is how we prevent ourselves from reusing a letter for the same word. There are a number of solutions for this, but all take the same general approach of marking a character as being “in use” while we traverse down its path. Afterwards, we unmark it so we can use it again.</p>
+<p>We have used a boolean array to do this. Before we traverse to a cell’s neighbors, we mark this cell as being taken. After we’re done, we mark it as available again.</p>
+<p>We can also perform an optimization in short circuiting early in our recursion. Imagine we have built the string PNCKR. That’s certainly not the start of any valid word in our dictionary, so why continue recursing down this path?</p>
+<p>If we implement the dictionary as a trie, we can have a function that tells us if a string is a substring of a valid word in the dictionary. A trie is special type of tree generally used for storing lists of words. It gives very efficient runtime to call an isPrefix method.</p>
+<p>For this algorithm, we can use isPrefix to terminate the recursion if we are on an invalid string.</p>
+<p>1. /* Find all words on board by finding all words that start with each character on the board.*/ 2. void boggle(char[][] board) { 3. boolean[][] marked = new boolean[board.length][board[0].length]; 4. for (int i = 0; i &lt; board.length; i++) { 5. for (int j = 0; j &lt; board[0].length; j++) { 6. boggle(board, i, j, “”, marked); 7. } 8. } 9. } 10. 11. /* Find all words that start with prefix and use the character at row, col.*/ 12. void boggle(char[][] board, int row, int col, String prefix, boolean[][] marked) { 13. /* Check that char is on board and not currently in use.*/ 14. if (!inBounds(board, row, col) || marked[row][col]) { 15. return; 16. } 17. 18. /* Append character to current word.*/ 19. prefix = prefix + board[row][col]; 20. 21. /* If there are no words starting with this prefix, return.*/ 22. if (!isValidPrefix(prefix)) { 23. return; 24. } 25. 26. /* Found a word. Print it.*/ 27. if (isValidWord(prefix)) { 28. System.out.println(prefix); 29. } 30. 31. /* Mark character as in use.*/ 32. marked[row][col] = true; 33. 34. /* Traverse each of its neighbors.*/ 35. boggle(board, row - 1, col, prefix, marked); // Go up 36. boggle(board, row, col + 1, prefix, marked); // Go right 37. boggle(board, row + 1, col, prefix, marked); // Go down 38. boggle(board, row, col - 1, prefix, marked); // Go left 39.</p>
+<p>40. /* We are done traversing its neighbors and will now return to its parent. Mark this cell as available again.*/ 41. marked[row][col] = false; 42. } 43. 44. /* Check if row, col is in bounds.*/ 45. boolean inBounds(char[][] board, int row, int col) { 46. if (row &lt; 0 || col &lt; 0 || row &gt;= board.length || col &gt;= board[row].length) { 47. return false; 48. } 49. return true; 50. } Describing the runtime of this algorithm is a bit tricky because it really depends on what the board and the English language is like. If many paths are valid (that is, the words form valid prefixes), then it will be much slower than if a lot of paths are not valid.</p>
+<p>If we didn’t do the isPrefix check, we would traverse through N each character, we would move in four possible directions the first time and 2 three after that. A path could be as long as N number of all possible paths starting from a given character is O(4*3 2 (N^2)</p>
+<p>give us a time of O(N *4*3 ), which reduces to O(N Realistically, given the trie and the pattern of letters in the English language, it will be much faster than that.</p>
+<h2>16.23 Given an array of integers (with both positive and negative values), find the contiguous sequence with the largest sum. Return just the sum.</h2>
+<h2>Example: Input: 2, -8, 3, -2, 4, -10 Output: 5 (i.e., {3, -2, 4})</h2>
+<p>Let’s start off with a brute force and see how we can optimize it.</p>
+<p>2 characters, For (the number of characters), so the (N^2)</p>
+<p>). This 2 (N^2)</p>
+<p>*3 ).</p>
+<p>jump to question</p>
+<h2>Brute Force</h2>
+<p>We could iterate through all possible subsequences, comparing their sum to a maximum sum. At the end, we return the biggest we have seen.</p>
+<p>1. int getMaxSum(int[] a) { 2. int maxSum = 0; 3. for (int left = 0; left &lt; a.length; left++) { 4. for (int right = left + 1; right &lt; a.length; right++) { 5. int sum = 0; 6. 7. /* Add all values between */ 8. for (int i = left; i &lt;= right; i++) { 9. sum += a[i]; 10. } 11. 12. if (sum &gt; maxSum) { 13. maxSum = sum; 14. } 15. } 16. } 17. return maxSum; 18. } 19.</p>
+<p>3 This is O(N ). We can do better!</p>
+<h2>Brute Force (Optimized)</h2>
+<p>Since each subsequence can be uniquely described with a start point and end 2 point, we know that there are roughly O(N ) subsequences of an array. And yet, 3 our earlier algorithm is taking O(N ) time. This suggests we might be able to optimize this.</p>
+<p>Let’s consider what the innermost for loop (the i loop) is doing. It’s just computing the sum of all the elements between left and right. We have just finished computing (in the prior iteration of the right loop) the sum of everything between left and right - 1.</p>
+<p>Instead of recomputing the sum every time, we can just keep a running sum. When right goes to the next iteration, we just add a[right] to the running sum.</p>
+<p>1. int getMaxSumBF(int[] a) { 2. int maxSum = 0; 3. for (int left = 0; left &lt; a.length; left++) { 4. int runningSum = 0; 5. for (int right = left; right &lt; a.length; right++) { 6. runningSum += a[right]; 7. if (runningSum &gt; maxSum) { 8. maxSum = runningSum; 9. } 10. } 11. } 12. return maxSum; 13. } 2 We’re now down to O(N ) time. This is better, but we’re still essentially doing a brute force solution.</p>
+<h2>Optimized</h2>
+<p>Let’s inspect what this last solution did at a deeper level.</p>
+<p>2, -4, 4, -3, 2, 5, -1, -4, -5, -2, -1, 2 We moved through all possible subsequences. That includes, for example, subsequences that include the first two values (2 and -4). Why would we ever want a subsequence that starts with {2, -4}? Their sum is -2, which means that they will only make a subsequence’s sum smaller.</p>
+<p>We do sometimes want negative values in the subsequence, but only when the negative value can join bigger values on both sides.</p>
+<p>This leads us to a useful insight: whenever a subsequence is negative, we know we won’t want to include it.</p>
+<p>Let’s fix up our code to break early when runningSum goes negative, so that we can then try the next value of left.</p>
+<p>1. int getMaxSum(int[] a) { 2. int maxSum = 0; 3. for (int left = 0; left &lt; a.length; left++) { 4. int runningSum = 0; 5. for (int right = left; right &lt; a.length; right++) { 6. runningSum += a[right]; 7. if (runningSum &gt; maxSum) { 8. maxSum = runningSum; 9. } else if (runningSum &lt; 0) { 10. break; 11. } 12. } 13. return maxSum; 14. } 15. } With this change, we now break as soon as we get past {2, -4}. Left will move on to point to -4, and then to 4 after that.</p>
+<p>We’ll continue moving right until runningSum runningSum is bigger than maxSum, we’ll update maxSum.</p>
+<p>When does runningSum become negative? Let’s walk through it.</p>
+<p>left: 4 right: 4 | -3 | 2 | 5 | -1 | -4 | -5 | ... runningSum: 4 | 1 | 3 | 8 | 7 | 3 | -2 | maxSum: 8 We break when right is pointing to -5. We have now definitely found the largest subsequence that starts at left.</p>
+<p>Observe that, up until that point, the sum of the values between left and any point x was greater than or equal to 0. In other words:</p>
+<p>sum(array[left], array[left + 1], ..., array[x-1]) &gt; 0 Imagine a subsequence starting at x and continue to anywhere in the array. If sum(array[left], array[left + 1], ..., array[x-1]) &gt; 0, then any subsequence starting at x could be made larger by instead starting it at left. It is, therefore, less optimal to start at x.</p>
+<p>becomes negative. When Thus, we haven’t just found the largest subsequence that starts at left. We’ve found the largest subsequence that starts anywherebetween left and right.</p>
+<p>We should now just move left over to right + 1.</p>
+<p>This brings us to a new algorithm:</p>
+<p>1. Start left and right at the far left side. 2. Move right until runningSum becomes negative. Track runningSum and maxSum along the way. 3. When runningSum becomes negative, move left over</p>
+<h2>to right + 1 and reset runningSum.</h2>
+<p>1. int getMaxSum(int[] a) { 2. int maxSum = 0; 3. int runningSum = 0; 4. int left = 0; 5. for (int right = 0; right &lt; a.length; right++) { 6. runningSum += a[right]; 7. if (runningSum &lt; 0) { 8. left = right + 1; 9. runningSum = 0; 10. } 11. if (maxSum &lt; runningSum) { 12. maxSum = runningSum; 13. } 14. } 15. return maxSum; 16. } If you look carefully, you might notice that left is set but never actually used. Therefore, we can implement the code without it.</p>
+
+</body>
+</html>
