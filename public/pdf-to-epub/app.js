@@ -514,13 +514,13 @@ function finalizeBlock(lines, blockFontSize, bodyFontSize) {
     let type = 'p';
     const ratio = blockFontSize / bodyFontSize;
 
-    if (text.length < 120 && ratio > 1.35) {
+    if (text.length < 120 && ratio >= 1.45) {
         type = 'h1';
-    } else if (text.length < 150 && ratio > 1.12) {
+    } else if (text.length < 150 && ratio >= 1.15) {
         type = 'h2';
     }
 
-    // Content-based heading detection
+    // Content-based heading detection (strong chapter markers)
     if (text.length < 60 && /^(chapter|part|section|prologue|epilogue|act|scene|appendix|introduction|conclusion|preface|foreword|acknowledgements?|about the author|bibliography|references|glossary|index)\b/i.test(text)) {
         type = 'h1';
     }
@@ -578,12 +578,32 @@ function buildChapters(blocks, splitMode) {
         title: 'Chapter 1',
         content: ''
     };
+    let currentChapterTextLength = 0;
 
     for (const block of blocks) {
         const escaped = escapeHtml(block.text);
+        let shouldSplit = false;
 
-        // h1 headings trigger new chapters (unless splitMode is 'none')
-        if (splitMode !== 'none' && block.type === 'h1' && escaped.length < 100) {
+        if (splitMode === 'auto') {
+            // Auto: Split on strong chapter titles, or on any h1 IF the chapter is already fairly long
+            const isStrongChapter = /^(chapter|part|section|prologue|epilogue|act|scene|appendix)\b/i.test(block.text) || 
+                                    /^\d{1,3}\.\s+\S/.test(block.text);
+            if (block.type === 'h1' && escaped.length < 100) {
+                if (isStrongChapter || currentChapterTextLength > 1500) {
+                    shouldSplit = true;
+                } else {
+                    // Downgrade h1 to h2 if we decided not to split, to maintain flow
+                    block.type = 'h2';
+                }
+            }
+        } else if (splitMode === 'header') {
+            // Split on all h1s
+            if (block.type === 'h1' && escaped.length < 100) {
+                shouldSplit = true;
+            }
+        }
+
+        if (shouldSplit) {
             if (currentChapter.content.trim().length > 0) {
                 chapters.push({ ...currentChapter });
                 chapterCount++;
@@ -593,6 +613,7 @@ function buildChapters(blocks, splitMode) {
                 title: escaped,
                 content: `<h1>${escaped}</h1>\n`
             };
+            currentChapterTextLength = escaped.length;
             continue;
         }
 
@@ -604,6 +625,7 @@ function buildChapters(blocks, splitMode) {
         } else {
             currentChapter.content += `<p>${escaped}</p>\n`;
         }
+        currentChapterTextLength += escaped.length;
 
         // Auto-split very large chapters to keep EPUB performant
         if (splitMode === 'auto' && currentChapter.content.length > 30000) {
@@ -614,6 +636,7 @@ function buildChapters(blocks, splitMode) {
                 title: `Section ${chapterCount}`,
                 content: ''
             };
+            currentChapterTextLength = 0;
         }
     }
 
