@@ -15,6 +15,7 @@
       "/js/*",
       "/portfolio/*",
       "/school/*",
+      "/freetools/*",
       "/api/*"
     ]
   },

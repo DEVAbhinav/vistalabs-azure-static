@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Online Web Tools - Vista Labs</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Base Reset & Variables */
+        :root {
+            --bg-dark: #06060f;
+            --card-bg: rgba(18, 18, 38, 0.45);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --primary: #8b5cf6;
+            --secondary: #3b82f6;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --font-sans: 'Outfit', sans-serif;
+            --font-body: 'Plus Jakarta Sans', sans-serif;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Glowing Orbs */
+        .bg-glow {
+            position: absolute;
+            width: 700px;
+            height: 700px;
+            border-radius: 50%;
+            filter: blur(140px);
+            opacity: 0.12;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .bg-glow-1 {
+            top: -250px;
+            right: -10%',
+            background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+        }
+
+        .bg-glow-2 {
+            bottom: -250px;
+            left: -100px;
+            background: radial-gradient(circle, var(--secondary) 0%, transparent 70%);
+        }
+
+        /* App Header */
+        .app-header {
+            width: 100%;
+            z-index: 10;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(6, 6, 15, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.25rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .logo-icon {
+            font-size: 1.75rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text span {
+            color: var(--primary);
+        }
+
+        .cta-link {
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 0.5rem 1.25rem;
+            border-radius: 100px;
+            background: rgba(255,255,255,0.02);
+            transition: var(--transition);
+        }
+
+        .cta-link:hover {
+            border-color: var(--primary);
+            background: rgba(139, 92, 246, 0.1);
+            transform: translateY(-1px);
+        }
+
+        /* App Main */
+        .app-main {
+            flex: 1;
+            z-index: 1;
+            padding: 4rem 1.5rem;
+        }
+
+        .main-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            color: #a78bfa;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0.35rem 1rem;
+            border-radius: 100px;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            letter-spacing: -1.5px;
+            background: linear-gradient(135deg, #ffffff 30%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            line-height: 1.1;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            font-family: var(--font-body);
+            color: var(--text-muted);
+            line-height: 1.6;
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        /* Tools Grid */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .tool-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 24px;
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, transparent 50%);
+            opacity: 0;
+            transition: var(--transition);
+            pointer-events: none;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(139, 92, 246, 0.3);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5), 0 0 25px rgba(139, 92, 246, 0.05);
+        }
+
+        .tool-card:hover::before {
+            opacity: 1;
+        }
+
+        .tool-icon {
+            font-size: 2.25rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.15);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .tool-card:hover .tool-icon {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
+        }
+
+        .tool-content {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .tool-title-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .tool-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .tool-badge {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            color: #34d399;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.2rem 0.6rem;
+            border-radius: 100px;
+            text-transform: uppercase;
+        }
+
+        .tool-desc {
+            font-size: 0.95rem;
+            font-family: var(--font-body);
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .tool-action {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-top: auto;
+            transition: var(--transition);
+        }
+
+        .tool-card:hover .tool-action {
+            color: #a78bfa;
+        }
+
+        .tool-action i {
+            transition: transform 0.25s;
+        }
+
+        .tool-card:hover .tool-action i {
+            transform: translateX(4px);
+        }
+
+        /* Coming Soon Card */
+        .tool-card.coming-soon {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .tool-card.coming-soon:hover {
+            transform: none;
+            border-color: var(--card-border);
+            box-shadow: none;
+        }
+
+        .tool-card.coming-soon .tool-icon {
+            background: rgba(255, 255, 255, 0.03);
+            border-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+        }
+
+        .tool-card.coming-soon .tool-badge {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+        }
+
+        .tool-card.coming-soon .tool-action {
+            color: var(--text-muted);
+        }
+
+        /* App Footer */
+        .app-footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            text-align: center;
+            background: rgba(6, 6, 12, 0.5);
+            z-index: 1;
+        }
+
+        .footer-container p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Responsive Overrides */
+        @media (min-width: 640px) {
+            .tools-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 768px) {
+            .hero-title {
+                font-size: 4.5rem;
+            }
+            .app-main {
+                padding: 6rem 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Elements -->
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+    
+    <header class="app-header">
+        <div class="header-container">
+            <a href="https://vistalabs.in" class="logo">
+                <span class="logo-icon"><i class="fa-solid fa-bolt"></i></span>
+                <span class="logo-text">Vista<span>Labs</span></span>
+            </a>
+            <a href="https://vistalabs.in" class="cta-link">Visit Website</a>
+        </div>
+    </header>
+
+    <main class="app-main">
+        <div class="main-container">
+            <!-- Hero -->
+            <section class="hero">
+                <span class="hero-badge">Web Toolbox</span>
+                <h1 class="hero-title">Free Web Tools</h1>
+                <p class="hero-subtitle">Premium, private, browser-based utilities to help you solve quick tasks without uploading files or installing heavy software.</p>
+            </section>
+
+            <!-- Grid -->
+            <div class="tools-grid">
+                <!-- PDF to EPUB Card -->
+                <a href="pdf-to-epub/" class="tool-card">
+                    <div class="tool-icon"><i class="fa-solid fa-book-open"></i></div>
+                    <div class="tool-content">
+                        <div class="tool-title-row">
+                            <h3 class="tool-title">PDF to EPUB</h3>
+                            <span class="tool-badge">Free</span>
+                        </div>
+                        <p class="tool-desc">Convert eBooks and documents from PDF to EPUB format. Optimized for comfortable reflowable reading on mobile and tablets. Runs 100% locally in your browser.</p>
+                    </div>
+                    <div class="tool-action">
+                        <span>Launch Tool</span> <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                </a>
+
+                <!-- Image Compressor (Coming Soon) -->
+                <div class="tool-card coming-soon">
+                    <div class="tool-icon"><i class="fa-solid fa-images"></i></div>
+                    <div class="tool-content">
+                        <div class="tool-title-row">
+                            <h3 class="tool-title">Image Compressor</h3>
+                            <span class="tool-badge">Coming Soon</span>
+                        </div>
+                        <p class="tool-desc">Compress JPG, PNG, and WebP images client-side with visual quality sliders. Shrink image file sizes by up to 90% without losing quality.</p>
+                    </div>
+                    <div class="tool-action">
+                        <span>Unavailable</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="app-footer">
+        <div class="footer-container">
+            <p>&copy; 2026 Vista Labs. All tools operate client-side in sandboxed browser memory.</p>
+        </div>
+    </footer>
+</body>
+</html>
