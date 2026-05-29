@@ -432,7 +432,7 @@ async function convertTextMode(title, author, splitMode, coverStyle, baseFontSiz
     updateProgress(85, 'Structuring EPUB container...', 'Creating package files and metadata.');
     
     // 1. mimetype (Must be uncompressed and first in the zip)
-    zip.file('mimetype', 'application/epub+zip', { compression: "STORED" });
+    zip.file('mimetype', 'application/epub+zip', { compression: "STORE" });
     
     // 2. META-INF/container.xml
     zip.file('META-INF/container.xml', 
@@ -623,7 +623,7 @@ async function convertImageMode(title, author, dpi, coverStyle, totalPages) {
     const scale = dpi / 72;
     
     // Setup Zip basic files
-    zip.file('mimetype', 'application/epub+zip', { compression: "STORED" });
+    zip.file('mimetype', 'application/epub+zip', { compression: "STORE" });
     zip.file('META-INF/container.xml', 
 `<?xml version="1.0" encoding="UTF-8"?>
 <container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">
