@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free PDF to EPUB Converter - Vista Labs</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Main Styles -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- PDF.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <!-- JSZip -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</head>
+<body>
+    <!-- Background Elements -->
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+    
+    <header class="app-header">
+        <div class="header-container">
+            <a href="../" class="back-link">
+                <i class="fa-solid fa-arrow-left"></i> Free Tools
+            </a>
+            <div class="logo">
+                <span class="logo-icon"><i class="fa-solid fa-file-pdf"></i></span>
+                <span class="logo-text">Vista<span>Labs</span></span>
+            </div>
+            <div class="header-badge">100% Client-Side</div>
+        </div>
+    </header>
+
+    <main class="app-main">
+        <div class="main-container">
+            <!-- Tool Hero Section -->
+            <section class="tool-hero">
+                <h1 class="hero-title">Convert PDF to EPUB</h1>
+                <p class="hero-subtitle">Optimize your books and documents for comfortable reading on mobile screens. No files uploaded, converted entirely in your browser.</p>
+            </section>
+
+            <!-- Main Converter Card -->
+            <div class="converter-card glass-panel">
+                
+                <!-- STEP 1: Upload and Configure -->
+                <div id="step-upload" class="step-view active">
+                    <!-- Drop Zone -->
+                    <div id="drop-zone" class="drop-zone">
+                        <input type="file" id="file-input" accept="application/pdf" class="file-input-hidden">
+                        <div class="drop-zone-content">
+                            <div class="drop-icon">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                            </div>
+                            <h3>Drag & drop your PDF book</h3>
+                            <p>or <span class="browse-btn">browse files</span></p>
+                            <span class="file-limits">Supports documents up to 100MB</span>
+                        </div>
+                    </div>
+
+                    <!-- File Info (Hidden by default) -->
+                    <div id="file-info-card" class="file-info-card glass-panel-inner hidden">
+                        <div class="file-icon"><i class="fa-solid fa-file-pdf"></i></div>
+                        <div class="file-details">
+                            <h4 id="file-name" class="file-name-text">book-title.pdf</h4>
+                            <p id="file-size" class="file-size-text">0.0 MB</p>
+                        </div>
+                        <button type="button" id="remove-file-btn" class="remove-btn" title="Remove file">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+
+                    <!-- Configuration Form (Disabled/Hidden by default, shown after file selected) -->
+                    <form id="config-form" class="config-form hidden">
+                        <div class="form-grid">
+                            <!-- Book Title -->
+                            <div class="form-group">
+                                <label for="book-title"><i class="fa-solid fa-book"></i> Book Title</label>
+                                <input type="text" id="book-title" placeholder="e.g. The Great Gatsby" required autocomplete="off">
+                            </div>
+
+                            <!-- Book Author -->
+                            <div class="form-group">
+                                <label for="book-author"><i class="fa-solid fa-user-pen"></i> Author Name</label>
+                                <input type="text" id="book-author" placeholder="e.g. F. Scott Fitzgerald" autocomplete="off">
+                            </div>
+
+                            <!-- Conversion Mode -->
+                            <div class="form-group full-width">
+                                <label><i class="fa-solid fa-sliders"></i> Conversion Mode</label>
+                                <div class="radio-card-group">
+                                    <label class="radio-card active">
+                                        <input type="radio" name="conv-mode" value="text" checked>
+                                        <div class="radio-card-content">
+                                            <div class="card-icon"><i class="fa-solid fa-font"></i></div>
+                                            <div class="card-text">
+                                                <span class="card-title">Reflowable Text (Recommended)</span>
+                                                <span class="card-desc">Extracts text and formats it into resizable pages. Perfect for standard reading on phones.</span>
+                                            </div>
+                                        </div>
+                                    </label>
+                                    <label class="radio-card">
+                                        <input type="radio" name="conv-mode" value="image">
+                                        <div class="radio-card-content">
+                                            <div class="card-icon"><i class="fa-solid fa-image"></i></div>
+                                            <div class="card-text">
+                                                <span class="card-title">Fixed Image Layout</span>
+                                                <span class="card-desc">Converts pages into high-res images. Best for scanned books, math textbooks, or comics.</span>
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Advanced Settings Toggle -->
+                            <div class="form-group full-width">
+                                <button type="button" id="toggle-advanced-btn" class="text-link-btn">
+                                    Advanced settings <i class="fa-solid fa-chevron-down"></i>
+                                </button>
+                            </div>
+
+                            <!-- Advanced Settings Panel (Hidden by default) -->
+                            <div id="advanced-settings" class="advanced-settings-panel full-width hidden">
+                                <div class="advanced-grid">
+                                    <!-- Page Breaks -->
+                                    <div class="form-group">
+                                        <label for="page-break-mode">Split Chapters By</label>
+                                        <select id="page-break-mode">
+                                            <option value="auto">Auto (Detect Chapter Titles & Page Count)</option>
+                                            <option value="header">Chapter Headings Only</option>
+                                            <option value="page">Every PDF Page (Strict layout)</option>
+                                            <option value="none">Single Continuous File (Short docs)</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Cover Style -->
+                                    <div class="form-group">
+                                        <label for="cover-style">EPUB Cover Image</label>
+                                        <select id="cover-style">
+                                            <option value="first-page">Render PDF's First Page</option>
+                                            <option value="generate">Generate Clean Typography Cover</option>
+                                            <option value="none">No Cover Image</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <!-- Font Size Adjust (for reflowable text mode) -->
+                                    <div class="form-group" id="group-font-size">
+                                        <label for="base-font-size">Base Font Size (CSS)</label>
+                                        <select id="base-font-size">
+                                            <option value="1em">Default (16px / 1em)</option>
+                                            <option value="1.1em">Medium (1.1em)</option>
+                                            <option value="1.2em">Large (1.2em)</option>
+                                            <option value="0.9em">Compact (0.9em)</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Image Resolution (for image mode) -->
+                                    <div class="form-group hidden" id="group-image-dpi">
+                                        <label for="image-dpi">Image Quality (DPI / Resolution)</label>
+                                        <select id="image-dpi">
+                                            <option value="150" selected>Standard (150 DPI - Balanced)</option>
+                                            <option value="200">High (200 DPI - Crisp but Large File)</option>
+                                            <option value="100">Low (100 DPI - Super Compact)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Convert Button -->
+                        <button type="submit" id="convert-btn" class="submit-btn gradient-btn">
+                            <span>Convert to EPUB</span> <i class="fa-solid fa-bolt"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- STEP 2: Conversion Progress -->
+                <div id="step-progress" class="step-view">
+                    <div class="progress-container">
+                        <div class="progress-ring-wrapper">
+                            <!-- Circular SVG progress bar -->
+                            <svg class="progress-ring" width="120" height="120">
+                                <circle class="progress-ring-bg" stroke="#1e1e38" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+                                <circle class="progress-ring-bar" id="progress-circle" stroke="url(#progress-gradient)" stroke-width="8" stroke-linecap="round" fill="transparent" r="52" cx="60" cy="60" stroke-dasharray="326.7" stroke-dashoffset="326.7"/>
+                                <defs>
+                                    <linearGradient id="progress-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#8b5cf6" />
+                                        <stop offset="100%" stop-color="#3b82f6" />
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                            <div class="progress-percentage"><span id="progress-percent-text">0</span>%</div>
+                        </div>
+                        <h3 id="progress-status-title">Reading PDF file...</h3>
+                        <p id="progress-status-desc" class="progress-subtitle">Extracting structure and metadata.</p>
+                    </div>
+
+                    <!-- Logs Panel -->
+                    <div class="logs-wrapper">
+                        <div class="logs-header">
+                            <span>Conversion Process Logs</span>
+                            <button type="button" id="toggle-logs-btn" class="logs-toggle-btn">Show <i class="fa-solid fa-chevron-down"></i></button>
+                        </div>
+                        <div id="logs-console" class="logs-console hidden">
+                            <div class="log-line log-info">Converter initialized. Waiting for task details...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 3: Success Screen -->
+                <div id="step-success" class="step-view">
+                    <div class="success-layout">
+                        <!-- Book Mockup Representation -->
+                        <div class="book-preview-container">
+                            <div class="book-mockup">
+                                <div class="book-cover-wrapper">
+                                    <canvas id="epub-cover-canvas" class="book-cover-canvas" width="300" height="420"></canvas>
+                                </div>
+                                <div class="book-spine"></div>
+                                <div class="book-pages-edge"></div>
+                            </div>
+                        </div>
+
+                        <!-- Success Information & Download -->
+                        <div class="success-info">
+                            <div class="success-badge"><i class="fa-solid fa-circle-check"></i> Conversion Complete</div>
+                            <h2 id="success-book-title">The Book Title</h2>
+                            <p id="success-book-author" class="success-author">by Author Name</p>
+                            
+                            <div class="file-summary-grid">
+                                <div class="summary-item">
+                                    <span class="summary-label">Format</span>
+                                    <span class="summary-val">EPUB 3.0</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">File Size</span>
+                                    <span id="success-file-size" class="summary-val">0.0 MB</span>
+                                </div>
+                            </div>
+
+                            <a id="download-link" href="#" download class="submit-btn gradient-btn download-btn">
+                                <i class="fa-solid fa-circle-arrow-down"></i> <span>Download EPUB File</span>
+                            </a>
+                            
+                            <div class="mobile-transfer-card glass-panel-inner">
+                                <div class="mobile-transfer-icon"><i class="fa-solid fa-mobile-screen-button"></i></div>
+                                <div class="mobile-transfer-info">
+                                    <h5>Read on your Mobile Device</h5>
+                                    <p>Open this page on your phone (Safari or Chrome), run the converter client-side, and save the resulting file directly to your Books app.</p>
+                                </div>
+                            </div>
+
+                            <button type="button" id="convert-another-btn" class="secondary-btn">
+                                <i class="fa-solid fa-rotate-left"></i> Convert Another Book
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Features Info Grid -->
+            <section class="features-section">
+                <h2 class="section-title">Why use our PDF to EPUB converter?</h2>
+                <div class="features-grid">
+                    <div class="feature-card glass-panel-inner">
+                        <div class="feature-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                        <h3>100% Secure & Private</h3>
+                        <p>Your files never leave your device. The entire conversion runs directly inside your web browser using HTML5 APIs, ensuring complete confidentiality.</p>
+                    </div>
+                    <div class="feature-card glass-panel-inner">
+                        <div class="feature-icon"><i class="fa-solid fa-mobile"></i></div>
+                        <h3>Made for Mobile Reading</h3>
+                        <p>PDFs are static and hard to read on phones. The reflowable text mode scales font sizes, adjusts spacing, and reformats paragraphs to fit mobile screens perfectly.</p>
+                    </div>
+                    <div class="feature-card glass-panel-inner">
+                        <div class="feature-icon"><i class="fa-solid fa-bolt"></i></div>
+                        <h3>Instant Conversion</h3>
+                        <p>No waiting in queues, no limits on conversions, and no premium subscriptions. Convert as many files as you want, as large as you want, completely free.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="app-footer">
+        <div class="footer-container">
+            <p>&copy; 2026 Vista Labs. All rights reserved. Built client-side for maximum performance & privacy.</p>
+        </div>
+    </footer>
+
+    <!-- App Logic -->
+    <script src="app.js"></script>
+</body>
+</html>

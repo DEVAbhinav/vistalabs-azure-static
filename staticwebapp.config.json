@@ -16,6 +16,7 @@
       "/portfolio/*",
       "/school/*",
       "/freetools/*",
+      "/pdf-to-epub/*",
       "/api/*"
     ]
   },
