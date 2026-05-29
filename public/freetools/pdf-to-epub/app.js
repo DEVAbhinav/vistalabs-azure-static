@@ -546,14 +546,25 @@ function mergeCrossPageBlocks(allPageBlocks) {
         for (let i = 0; i < pageBlocks.length; i++) {
             const block = { ...pageBlocks[i] };
 
-            if (merged.length > 0 && block.type === 'p') {
+            if (merged.length > 0) {
                 const lastMerged = merged[merged.length - 1];
-                // Join if previous block is a paragraph that ends mid-sentence
-                if (lastMerged.type === 'p' && !lastMerged.text.match(/[.!?:;""')\]]\s*$/)) {
-                    // Also check: current block starts with lowercase or continues a sentence
-                    const startsLower = /^[a-z]/.test(block.text);
-                    const lastEndsWithComma = /,\s*$/.test(lastMerged.text);
-                    if (startsLower || lastEndsWithComma || !lastMerged.text.match(/[.!?]\s*$/)) {
+
+                // Join paragraphs split across pages
+                if (block.type === 'p' && lastMerged.type === 'p') {
+                    if (!lastMerged.text.match(/[.!?:;""')\]]\s*$/)) {
+                        const startsLower = /^[a-z]/.test(block.text);
+                        const lastEndsWithComma = /,\s*$/.test(lastMerged.text);
+                        if (startsLower || lastEndsWithComma || !lastMerged.text.match(/[.!?]\s*$/)) {
+                            lastMerged.text += ' ' + block.text;
+                            continue;
+                        }
+                    }
+                }
+                
+                // Join headings that were wrapped across lines or pages
+                if ((block.type === 'h1' || block.type === 'h2') && lastMerged.type === block.type) {
+                    // Only merge if the second part starts with a lowercase letter (to avoid merging ToC entries)
+                    if (/^[a-z]/.test(block.text) && !lastMerged.text.match(/[.!?:;""')\]]\s*$/)) {
                         lastMerged.text += ' ' + block.text;
                         continue;
                     }
@@ -579,6 +590,7 @@ function buildChapters(blocks, splitMode) {
         content: ''
     };
     let currentChapterTextLength = 0;
+    let currentChapterParagraphs = 0;
 
     for (const block of blocks) {
         const escaped = escapeHtml(block.text);
@@ -588,7 +600,7 @@ function buildChapters(blocks, splitMode) {
             // Auto: Split on strong chapter titles, or on any h1 IF the chapter is already fairly long
             const isStrongChapter = /^(chapter|part|section|prologue|epilogue|act|scene|appendix)\b/i.test(block.text);
             if (block.type === 'h1' && escaped.length < 100) {
-                if (isStrongChapter || currentChapterTextLength > 1500) {
+                if (isStrongChapter || (currentChapterTextLength > 1500 && currentChapterParagraphs > 3)) {
                     shouldSplit = true;
                 } else {
                     // Downgrade h1 to h2 if we decided not to split, to maintain flow
@@ -613,6 +625,7 @@ function buildChapters(blocks, splitMode) {
                 content: `<h1>${escaped}</h1>\n`
             };
             currentChapterTextLength = escaped.length;
+            currentChapterParagraphs = 0;
             continue;
         }
 
@@ -623,6 +636,7 @@ function buildChapters(blocks, splitMode) {
             currentChapter.content += `<h2>${escaped}</h2>\n`;
         } else {
             currentChapter.content += `<p>${escaped}</p>\n`;
+            currentChapterParagraphs++;
         }
         currentChapterTextLength += escaped.length;
 
