@@ -235,132 +235,176 @@ async function startConversion() {
 //  INTELLIGENT TEXT EXTRACTION ENGINE
 // =============================================================================
 
-/**
- * Phase 0: Pre-analyze the document by scanning a sample of pages.
- * Determines:
- *  - bodyFontSize: the most common font size (= body text)
- *  - headerPatterns: recurring text at the top of pages (running headers)
- *  - footerPatterns: recurring text at the bottom (page numbers, running footers)
- *  - avgPageHeight / avgPageWidth
- */
+const TEXT_MODE_SNAPSHOT_DPI = 110;
+const TEXT_MODE_SNAPSHOT_QUALITY = 0.78;
+const PDF_OPS = (typeof pdfjsLib !== 'undefined' && pdfjsLib.OPS) ? pdfjsLib.OPS : {};
+const IMAGE_PAINT_OPS = new Set([
+    PDF_OPS.paintImageXObject,
+    PDF_OPS.paintJpegXObject,
+    PDF_OPS.paintInlineImageXObject,
+    PDF_OPS.paintImageMaskXObject,
+].filter(Boolean));
+
+function normalizeText(text) {
+    return (text || '').replace(/\s+/g, ' ').trim();
+}
+
+function canonicalText(text) {
+    return normalizeText(text)
+        .toLowerCase()
+        .replace(/\bpage\s+\d+\b/g, 'page #')
+        .replace(/\bchapter\s+\d+\b/g, 'chapter #')
+        .replace(/\d+/g, '#')
+        .replace(/[^\p{L}\p{N}# ]/gu, '')
+        .trim();
+}
+
+function getItemFontSize(item) {
+    if (!item || !item.transform) return 0;
+    return Math.max(Math.abs(item.transform[0] || 0), Math.abs(item.transform[3] || 0));
+}
+
+function collectSamplePages(numPages) {
+    const pages = new Set();
+    for (let i = 1; i <= Math.min(numPages, 20); i++) pages.add(i);
+    if (numPages > 20) {
+        const step = Math.max(1, Math.floor(numPages / 35));
+        for (let i = 21; i <= numPages && pages.size < 60; i += step) pages.add(i);
+    }
+    return [...pages].sort((a, b) => a - b);
+}
+
 async function analyzeDocument(pdfDoc) {
     const result = {
         bodyFontSize: 10,
         headerPatterns: new Set(),
         footerPatterns: new Set(),
+        canonicalHeaderPatterns: new Set(),
+        canonicalFooterPatterns: new Set(),
         avgPageHeight: 792,
         avgPageWidth: 612,
     };
 
-    const fontSizeCharCount = {};   // fontSize → total character count
-    const topTexts = {};            // text → number of pages it appears on
-    const bottomTexts = {};         // text → number of pages it appears on
-    const pagesToScan = Math.min(pdfDoc.numPages, 20);
+    const fontSizeCharCount = {};
+    const topTexts = {};
+    const bottomTexts = {};
+    const samplePages = collectSamplePages(pdfDoc.numPages);
     let totalHeight = 0, totalWidth = 0;
 
-    for (let i = 1; i <= pagesToScan; i++) {
-        const page = await pdfDoc.getPage(i);
+    for (const pageNum of samplePages) {
+        const page = await pdfDoc.getPage(pageNum);
         const vp = page.getViewport({ scale: 1 });
         const tc = await page.getTextContent();
         totalHeight += vp.height;
         totalWidth += vp.width;
 
-        const topZone = vp.height * 0.92;   // PDF Y: bottom=0, top=pageHeight
-        const bottomZone = vp.height * 0.08;
+        const topZone = vp.height * 0.88;
+        const bottomZone = vp.height * 0.12;
         const pageTopTexts = new Set();
         const pageBottomTexts = new Set();
 
-        for (const item of tc.items) {
-            const text = (item.str || '').trim();
+        for (const item of tc.items || []) {
+            const text = normalizeText(item.str);
             if (!text) continue;
-            const fs = Math.round(Math.abs(item.transform[0]) * 2) / 2; // round to 0.5
-            fontSizeCharCount[fs] = (fontSizeCharCount[fs] || 0) + text.length;
+            const fs = Math.round(getItemFontSize(item) * 2) / 2;
+            if (fs > 0) fontSizeCharCount[fs] = (fontSizeCharCount[fs] || 0) + text.length;
 
             const y = item.transform[5];
             if (y > topZone) pageTopTexts.add(text);
             if (y < bottomZone) pageBottomTexts.add(text);
         }
 
-        // Count how many pages each header/footer text appears on
         for (const t of pageTopTexts) topTexts[t] = (topTexts[t] || 0) + 1;
         for (const t of pageBottomTexts) bottomTexts[t] = (bottomTexts[t] || 0) + 1;
     }
 
-    result.avgPageHeight = totalHeight / pagesToScan;
-    result.avgPageWidth = totalWidth / pagesToScan;
+    result.avgPageHeight = totalHeight / Math.max(samplePages.length, 1);
+    result.avgPageWidth = totalWidth / Math.max(samplePages.length, 1);
 
-    // Body font = font size with the most total characters
     let maxChars = 0;
     for (const [fs, chars] of Object.entries(fontSizeCharCount)) {
-        if (chars > maxChars) { maxChars = chars; result.bodyFontSize = parseFloat(fs); }
+        if (chars > maxChars) {
+            maxChars = chars;
+            result.bodyFontSize = parseFloat(fs);
+        }
     }
 
-    // Recurring header text (appears on ≥30% of sampled pages)
-    const threshold = Math.max(2, pagesToScan * 0.3);
+    const threshold = Math.max(2, samplePages.length * 0.25);
     for (const [text, count] of Object.entries(topTexts)) {
-        if (count >= threshold) result.headerPatterns.add(text);
+        const canonical = canonicalText(text);
+        if (count >= threshold || isLikelyRunningHeader(text)) {
+            result.headerPatterns.add(text);
+            if (canonical) result.canonicalHeaderPatterns.add(canonical);
+        }
     }
     for (const [text, count] of Object.entries(bottomTexts)) {
-        if (count >= threshold || /^\d{1,5}$/.test(text)) result.footerPatterns.add(text);
+        const canonical = canonicalText(text);
+        if (count >= threshold || isPageNumberText(text)) {
+            result.footerPatterns.add(text);
+            if (canonical) result.canonicalFooterPatterns.add(canonical);
+        }
     }
 
     return result;
 }
 
-/**
- * Filter out header/footer items from a page's text items.
- * Removes:
- *  - Items in the top/bottom margin zones that match recurring patterns
- *  - Standalone page numbers at the bottom
- *  - Small-font text in extreme top/bottom margins
- */
+function isPageNumberText(text) {
+    const t = normalizeText(text);
+    return /^\d{1,5}$/.test(t)
+        || /^[ivxlcdm]+$/i.test(t) && t.length < 8
+        || /^page\s+\d+$/i.test(t)
+        || /^[-–—]\s*\d+\s*[-–—]$/.test(t);
+}
+
+function isLikelyRunningHeader(text) {
+    const t = normalizeText(text);
+    return t.length < 90 && (
+        /\bcracking\s+the\s+pm\s+interview\b/i.test(t)
+        || /\bchapter\s+\d{1,3}\b/i.test(t)
+    );
+}
+
+function matchesRecurringPattern(text, exactPatterns, canonicalPatterns) {
+    const t = normalizeText(text);
+    if (exactPatterns.has(t)) return true;
+    const canonical = canonicalText(t);
+    if (canonical && canonicalPatterns.has(canonical)) return true;
+    for (const pattern of exactPatterns) {
+        if (pattern.includes(t) && t.length > 3) return true;
+    }
+    return false;
+}
+
 function filterHeadersFooters(items, analysis, pageHeight) {
-    const topZone = pageHeight * 0.91;
-    const bottomZone = pageHeight * 0.09;
+    const topZone = pageHeight * 0.88;
+    const bottomZone = pageHeight * 0.115;
 
     return items.filter(item => {
-        const text = (item.str || '').trim();
+        const text = normalizeText(item.str);
         if (!text) return false;
         const y = item.transform[5];
-        const fs = Math.abs(item.transform[0]);
+        const fs = getItemFontSize(item);
 
-        // --- Top-of-page items ---
         if (y > topZone) {
-            // Exact match with known recurring headers
-            if (analysis.headerPatterns.has(text)) return false;
-            // Substring match: the running header might be split across items
-            for (const hp of analysis.headerPatterns) {
-                if (hp.includes(text) && text.length > 3) return false;
-            }
-            // Small text in the header margin is likely a running head
+            if (matchesRecurringPattern(text, analysis.headerPatterns, analysis.canonicalHeaderPatterns)) return false;
+            if (isLikelyRunningHeader(text) && fs <= analysis.bodyFontSize * 1.15) return false;
             if (fs < analysis.bodyFontSize * 0.95 && text.length < 100) return false;
         }
 
-        // --- Bottom-of-page items ---
         if (y < bottomZone) {
-            if (analysis.footerPatterns.has(text)) return false;
-            // Page numbers: purely numeric, or roman numerals, or "Page N"
-            if (/^\d{1,5}$/.test(text)) return false;
-            if (/^[ivxlcdm]+$/i.test(text) && text.length < 8) return false;
-            if (/^page\s+\d+$/i.test(text)) return false;
-            if (/^[-–—]\s*\d+\s*[-–—]$/.test(text)) return false; // "- 42 -"
-            // Small decorative footer text
-            if (fs < analysis.bodyFontSize * 0.95 && text.length < 80) return false;
+            if (matchesRecurringPattern(text, analysis.footerPatterns, analysis.canonicalFooterPatterns)) return false;
+            if (isPageNumberText(text)) return false;
+            if (fs < analysis.bodyFontSize * 0.95 && text.length < 90) return false;
         }
 
         return true;
     });
 }
 
-/**
- * Detect multi-column layouts using X-axis gap analysis.
- * Returns an array of item arrays — one per column, left-to-right.
- */
 function detectColumns(items, pageWidth) {
-    if (items.length < 6) return [items];
+    if (items.length < 8) return [items];
 
-    // Build a histogram of X-center positions across 40 buckets
-    const numBuckets = 40;
+    const numBuckets = 48;
     const bucketWidth = pageWidth / numBuckets;
     const buckets = new Array(numBuckets).fill(0);
 
@@ -370,96 +414,114 @@ function detectColumns(items, pageWidth) {
         buckets[b]++;
     }
 
-    // Find the widest empty gap in the middle 60% of the page (buckets 8–32)
     let bestGapCenter = -1, bestGapWidth = 0;
-    for (let i = 8; i <= 32; ) {
+    for (let i = Math.floor(numBuckets * 0.18); i <= Math.ceil(numBuckets * 0.82); ) {
         if (buckets[i] === 0) {
-            let gapStart = i;
-            while (i <= 32 && buckets[i] === 0) i++;
-            let gapW = i - gapStart;
+            const gapStart = i;
+            while (i <= Math.ceil(numBuckets * 0.82) && buckets[i] === 0) i++;
+            const gapW = i - gapStart;
             if (gapW > bestGapWidth) {
                 bestGapWidth = gapW;
                 bestGapCenter = (gapStart + i) / 2;
             }
-        } else { i++; }
+        } else {
+            i++;
+        }
     }
 
-    // Need ≥2 empty buckets (≥5% of page width) to call it multi-column
-    if (bestGapWidth >= 2 && bestGapCenter > 0) {
+    if (bestGapWidth >= 3 && bestGapCenter > 0) {
         const splitX = bestGapCenter * bucketWidth;
         const left = items.filter(it => (it.transform[4] + (it.width || 0) / 2) < splitX);
         const right = items.filter(it => (it.transform[4] + (it.width || 0) / 2) >= splitX);
-        if (left.length >= 3 && right.length >= 3) {
-            return [left, right];
-        }
+        const balance = Math.min(left.length, right.length) / Math.max(left.length, right.length);
+        if (left.length >= 5 && right.length >= 5 && balance > 0.22) return [left, right];
     }
+
     return [items];
 }
 
-/**
- * Reconstruct readable text blocks from a single column of text items.
- * Groups items into lines, then lines into paragraphs.
- * Returns: [ { type: 'h1'|'h2'|'p', text: string } ]
- */
-function extractBlocksFromColumn(items, bodyFontSize) {
-    if (!items.length) return [];
-
-    // Sort: top-to-bottom (descending Y), then left-to-right
+function groupItemsIntoLines(items) {
     const sorted = [...items].sort((a, b) => {
         const dy = b.transform[5] - a.transform[5];
-        if (Math.abs(dy) < 3) return a.transform[4] - b.transform[4];
+        if (Math.abs(dy) < 2) return a.transform[4] - b.transform[4];
         return dy;
     });
-
-    // --- Group into lines (items sharing the same Y baseline ±3 units) ---
     const lines = [];
-    let curLine = [sorted[0]];
-    for (let i = 1; i < sorted.length; i++) {
-        const item = sorted[i];
-        const prevY = curLine[curLine.length - 1].transform[5];
-        if (Math.abs(prevY - item.transform[5]) < 3) {
-            curLine.push(item);
-        } else {
-            lines.push(curLine);
-            curLine = [item];
-        }
-    }
-    lines.push(curLine);
 
-    // --- Build structured line objects ---
-    const structuredLines = [];
-    for (const lineItems of lines) {
-        // Sort items within line by X (left to right)
-        lineItems.sort((a, b) => a.transform[4] - b.transform[4]);
-
-        // Join items into a single line string with smart spacing
-        let lineText = '';
-        for (let i = 0; i < lineItems.length; i++) {
-            const item = lineItems[i];
-            if (i > 0) {
-                const prevItem = lineItems[i - 1];
-                const prevEnd = prevItem.transform[4] + (prevItem.width || 0);
-                const curStart = item.transform[4];
-                const gap = curStart - prevEnd;
-                const spaceThreshold = Math.abs(item.transform[0]) * 0.25;
-                if (gap > spaceThreshold && !prevItem.str.endsWith(' ') && !item.str.startsWith(' ')) {
-                    lineText += ' ';
-                }
+    for (const item of sorted) {
+        const fs = getItemFontSize(item) || 10;
+        const threshold = Math.max(3, Math.min(6.5, fs * 0.55));
+        let target = null;
+        for (const line of lines) {
+            if (Math.abs(line.y - item.transform[5]) <= threshold) {
+                target = line;
+                break;
             }
-            lineText += item.str;
         }
-
-        lineText = lineText.trim();
-        if (!lineText) continue;
-
-        const fontSize = Math.abs(lineItems[0].transform[0]);
-        const y = lineItems[0].transform[5];
-        structuredLines.push({ text: lineText, fontSize, y });
+        if (!target) {
+            target = { y: item.transform[5], items: [] };
+            lines.push(target);
+        }
+        target.items.push(item);
+        target.y = target.items.reduce((sum, it) => sum + it.transform[5], 0) / target.items.length;
     }
 
+    return lines.sort((a, b) => b.y - a.y).map(line => buildStructuredLine(line.items));
+}
+
+function buildStructuredLine(lineItems) {
+    lineItems.sort((a, b) => a.transform[4] - b.transform[4]);
+    const fontSizes = lineItems.map(getItemFontSize).filter(Boolean);
+    const fontSize = fontSizes.length ? Math.max(...fontSizes) : 10;
+    const baseline = lineItems.reduce((sum, item) => sum + item.transform[5], 0) / lineItems.length;
+    const x = Math.min(...lineItems.map(item => item.transform[4]));
+    const right = Math.max(...lineItems.map(item => item.transform[4] + (item.width || 0)));
+    let text = '';
+    let html = '';
+    let largeGapCount = 0;
+
+    for (let i = 0; i < lineItems.length; i++) {
+        const item = lineItems[i];
+        const raw = item.str || '';
+        if (i > 0) {
+            const prev = lineItems[i - 1];
+            const prevEnd = prev.transform[4] + (prev.width || 0);
+            const gap = item.transform[4] - prevEnd;
+            const spaceThreshold = Math.max(1.2, getItemFontSize(item) * 0.25);
+            if (gap > spaceThreshold && !text.endsWith(' ') && !raw.startsWith(' ')) {
+                const spacer = gap > fontSize * 1.4 ? '    ' : ' ';
+                if (spacer.length > 1) largeGapCount++;
+                text += spacer;
+                html += spacer;
+            }
+        }
+
+        const itemFont = getItemFontSize(item);
+        const isSuper = item.transform[5] > baseline + Math.max(1.6, fontSize * 0.25) && itemFont < fontSize * 0.95;
+        const isSub = item.transform[5] < baseline - Math.max(1.6, fontSize * 0.25) && itemFont < fontSize * 0.95;
+        text += raw;
+        if (isSuper) html += `<sup>${escapeHtml(raw)}</sup>`;
+        else if (isSub) html += `<sub>${escapeHtml(raw)}</sub>`;
+        else html += escapeHtml(raw);
+    }
+
+    return {
+        text: normalizeText(text),
+        html: html.trim(),
+        fontSize,
+        y: baseline,
+        x,
+        width: right - x,
+        largeGapCount,
+        itemCount: lineItems.length,
+    };
+}
+
+function extractBlocksFromColumn(items, bodyFontSize) {
+    if (!items.length) return [];
+    const structuredLines = groupItemsIntoLines(items).filter(line => line.text);
     if (!structuredLines.length) return [];
 
-    // --- Group lines into blocks (paragraphs/headings) ---
     const blocks = [];
     let blockLines = [structuredLines[0]];
     let blockFontSize = structuredLines[0].fontSize;
@@ -468,10 +530,13 @@ function extractBlocksFromColumn(items, bodyFontSize) {
         const line = structuredLines[i];
         const prevLine = structuredLines[i - 1];
         const yGap = Math.abs(prevLine.y - line.y);
-        const fontChanged = Math.abs(blockFontSize - line.fontSize) > 0.8;
-        const largeGap = yGap > blockFontSize * 1.8;
+        const fontChanged = Math.abs(blockFontSize - line.fontSize) > 0.9;
+        const largeGap = yGap > Math.max(blockFontSize * 1.75, 15);
+        const listBoundary = parseListLine(line.text) || parseListLine(prevLine.text);
+        const codeBoundary = isLikelyCodeLine(line.text) || isLikelyCodeLine(prevLine.text);
+        const startsHeading = looksLikeStandaloneHeading(line.text, line.fontSize / bodyFontSize);
 
-        if (fontChanged || largeGap) {
+        if (fontChanged || largeGap || (startsHeading && blockLines.length > 0) || (listBoundary && largeGap) || (codeBoundary && largeGap)) {
             blocks.push(finalizeBlock(blockLines, blockFontSize, bodyFontSize));
             blockLines = [line];
             blockFontSize = line.fontSize;
@@ -481,96 +546,174 @@ function extractBlocksFromColumn(items, bodyFontSize) {
     }
     blocks.push(finalizeBlock(blockLines, blockFontSize, bodyFontSize));
 
-    return blocks;
+    return blocks.filter(Boolean);
 }
 
-/**
- * Finalize a block of lines into a typed text block.
- * Handles hyphenation across lines and classifies as heading or paragraph.
- */
-function finalizeBlock(lines, blockFontSize, bodyFontSize) {
-    // Join lines, handling end-of-line hyphens
+function parseListLine(text) {
+    const t = normalizeText(text);
+    let m = t.match(/^(\d{1,3})[.)]\s+(.+)$/);
+    if (m) return { ordered: true, number: parseInt(m[1], 10), text: m[2] };
+    m = t.match(/^(\d{1,3}(?:\.\d{1,3})+)\s+(.+)$/);
+    if (m) return { ordered: true, number: parseInt(m[1], 10), text: m[2] };
+    m = t.match(/^([A-Za-z])[.)]\s+(.+)$/);
+    if (m) return { ordered: true, number: null, text: m[2] };
+    m = t.match(/^[-*•]\s+(.+)$/);
+    if (m) return { ordered: false, number: null, text: m[1] };
+    return null;
+}
+
+function isQuestionPrompt(text) {
+    return /^(?:\d{1,3}(?:[.)]|\.\d{1,3})?\s*)?(tell me|describe|suppose|estimate|design|improve|create|write|implement|what|how|why|when|where|which|you notice|given)\b/i.test(text)
+        || /\?\s*$/.test(text);
+}
+
+function isLikelyCodeLine(text) {
+    const t = normalizeText(text);
+    if (!t) return false;
+    if (/^(?:\d{1,3}[.)]\s*)?(for|while|if|else|return|class|public|private|void|int|string|boolean|function|let|const|var|print|sum)\b/i.test(t)) return true;
+    if (/[{};]/.test(t) && /\b(for|while|if|return|int|string|void|new|class|function)\b/i.test(t)) return true;
+    if (/^\d{1,3}[.)]\s*[\w[\]<>]+\s*[=({]/.test(t)) return true;
+    return false;
+}
+
+function isLikelyCodeBlock(lines) {
+    const codeLines = lines.filter(line => isLikelyCodeLine(line.text)).length;
+    const hasCodePunctuation = lines.some(line => /[{};]/.test(line.text));
+    return codeLines >= 2 || (codeLines >= 1 && hasCodePunctuation);
+}
+
+function isLikelyTableBlock(lines) {
+    if (lines.length < 2) return false;
+    const tabularLines = lines.filter(line => line.largeGapCount >= 2 || /\s{4,}/.test(line.text)).length;
+    return tabularLines >= Math.max(2, Math.ceil(lines.length * 0.5));
+}
+
+function looksLikeStandaloneHeading(text, ratio) {
+    const t = cleanHeadingText(text);
+    if (!t || t.length > 140) return false;
+    if (isQuestionPrompt(t) || isLikelyCodeLine(t)) return false;
+    if (isLikelyNumberedChapterTitle(t, ratio)) return true;
+    if (/^(chapter\s+[ivxlcdm\d]+|part\s+[ivxlcdm\d]+|section\s+[ivxlcdm\d]+|prologue|epilogue|appendix|introduction|conclusion|preface|foreword|acknowledgements?|about the author|bibliography|references|glossary|index)\b/i.test(t)) return true;
+    return ratio >= 1.18 && !/[.!?]\s*$/.test(t) && countWords(t) <= 12;
+}
+
+function countWords(text) {
+    return normalizeText(text).split(/\s+/).filter(Boolean).length;
+}
+
+function cleanHeadingText(text) {
+    let t = normalizeText(text);
+    t = t.replace(/\s+\bChapter\s+\d{1,3}\s*$/i, '');
+    t = t.replace(/^Chapter\s+\d{1,3}\s+(.+)$/i, '$1');
+    t = t.replace(/\s+\bPage\s+\d{1,5}\s*$/i, '');
+    return normalizeText(t);
+}
+
+function isLikelyNumberedChapterTitle(text, ratio) {
+    const m = normalizeText(text).match(/^(\d{1,2})[.)]\s+(.+)$/);
+    if (!m) return false;
+    const rest = m[2].trim();
+    if (!rest || rest.length > 70) return false;
+    if (isQuestionPrompt(text) || isLikelyCodeLine(text)) return false;
+    if (/[.!?]\s*$/.test(rest)) return false;
+    if (/\b(and|or|to|with|across|when|in|of|a|the)$/i.test(rest)) return false;
+    return ratio >= 1.1 && /^[A-Z]/.test(rest) && countWords(rest) <= 8;
+}
+
+function joinLinesForParagraph(lines) {
     let text = '';
+    let html = '';
     for (let i = 0; i < lines.length; i++) {
         const lineText = lines[i].text;
+        const lineHtml = lines[i].html || escapeHtml(lineText);
         if (i === 0) {
             text = lineText;
-        } else if (text.endsWith('-')) {
-            // Remove hyphen and join (e.g. "produc-" + "tivity" → "productivity")
-            // But keep double hyphens and dashes
-            if (!text.endsWith('--') && !text.endsWith('—') && !text.endsWith('–')) {
-                text = text.slice(0, -1) + lineText;
-            } else {
-                text += ' ' + lineText;
-            }
+            html = lineHtml;
+        } else if (text.endsWith('-') && !text.endsWith('--')) {
+            text = text.slice(0, -1) + lineText;
+            html = html.endsWith('-') ? html.slice(0, -1) + lineHtml : html + lineHtml;
         } else {
             text += ' ' + lineText;
+            html += ' ' + lineHtml;
         }
     }
+    return { text: normalizeText(text), html: normalizeText(html) };
+}
 
-    text = text.trim();
-
-    // Classify block type using RELATIVE font size
-    let type = 'p';
+function finalizeBlock(lines, blockFontSize, bodyFontSize) {
+    if (!lines.length) return null;
     const ratio = blockFontSize / bodyFontSize;
+    const parsedList = lines.map(line => parseListLine(line.text));
+    const listCount = parsedList.filter(Boolean).length;
 
-    if (text.length < 120 && ratio >= 1.45) {
-        type = 'h1';
-    } else if (text.length < 150 && ratio >= 1.15) {
+    if (isLikelyCodeBlock(lines)) {
+        return {
+            type: 'pre',
+            text: lines.map(line => line.text).join('\n'),
+            fontSize: blockFontSize,
+        };
+    }
+
+    if (isLikelyTableBlock(lines)) {
+        return {
+            type: 'pre',
+            subtype: 'table',
+            text: lines.map(line => line.text).join('\n'),
+            fontSize: blockFontSize,
+        };
+    }
+
+    if (listCount > 0 && listCount >= Math.ceil(lines.length * 0.6)) {
+        const first = parsedList.find(Boolean);
+        return {
+            type: 'list',
+            ordered: first.ordered,
+            start: first.number || 1,
+            items: parsedList.map((item, idx) => item ? item.text : lines[idx].text),
+            text: lines.map(line => line.text).join(' '),
+            fontSize: blockFontSize,
+        };
+    }
+
+    const joined = joinLinesForParagraph(lines);
+    let text = joined.text;
+    let html = joined.html;
+    let type = 'p';
+    const cleanedHeading = cleanHeadingText(text);
+
+    if (looksLikeStandaloneHeading(cleanedHeading, ratio)) {
+        text = cleanedHeading;
+        html = escapeHtml(cleanedHeading);
+        type = ratio >= 1.35 || /^(chapter|part|appendix|introduction|conclusion|preface|foreword|acknowledgements?|about the author)\b/i.test(text)
+            ? 'h1'
+            : 'h2';
+    } else if (text.length < 150 && ratio >= 1.2 && !isQuestionPrompt(text) && !isLikelyCodeLine(text)) {
+        text = cleanedHeading;
+        html = escapeHtml(cleanedHeading);
         type = 'h2';
     }
 
-    // Content-based heading detection (strong chapter markers)
-    if (text.length < 60 && /^(chapter|part|section|prologue|epilogue|act|scene|appendix|introduction|conclusion|preface|foreword|acknowledgements?|about the author|bibliography|references|glossary|index)\b/i.test(text)) {
-        type = 'h1';
-    }
-    // Numbered chapter patterns: "Chapter 1", "CHAPTER I", "1. Introduction"
-    if (text.length < 80 && /^(chapter\s+[IVXLC\d]+|CHAPTER\s+[IVXLC\d]+|\d{1,3}\.\s+\S)/i.test(text)) {
-        type = 'h1';
-    }
-
-    return { type, text, fontSize: blockFontSize };
+    return { type, text, html, fontSize: blockFontSize };
 }
 
-/**
- * Merge text blocks across page boundaries.
- * Joins paragraphs split across pages when:
- *   - The last block of a page ends without sentence-ending punctuation
- *   - The first block of the next page is also a paragraph (not a heading)
- */
 function mergeCrossPageBlocks(allPageBlocks) {
     const merged = [];
 
-    for (let p = 0; p < allPageBlocks.length; p++) {
-        const pageBlocks = allPageBlocks[p];
-        for (let i = 0; i < pageBlocks.length; i++) {
-            const block = { ...pageBlocks[i] };
-
-            if (merged.length > 0) {
-                const lastMerged = merged[merged.length - 1];
-
-                // Join paragraphs split across pages
-                if (block.type === 'p' && lastMerged.type === 'p') {
-                    if (!lastMerged.text.match(/[.!?:;""')\]]\s*$/)) {
-                        const startsLower = /^[a-z]/.test(block.text);
-                        const lastEndsWithComma = /,\s*$/.test(lastMerged.text);
-                        if (startsLower || lastEndsWithComma || !lastMerged.text.match(/[.!?]\s*$/)) {
-                            lastMerged.text += ' ' + block.text;
-                            continue;
-                        }
-                    }
-                }
-                
-                // Join headings that were wrapped across lines or pages
-                if ((block.type === 'h1' || block.type === 'h2') && lastMerged.type === block.type) {
-                    // Only merge if the second part starts with a lowercase letter (to avoid merging ToC entries)
-                    if (/^[a-z]/.test(block.text) && !lastMerged.text.match(/[.!?:;""')\]]\s*$/)) {
-                        lastMerged.text += ' ' + block.text;
+    for (const pageBlocks of allPageBlocks) {
+        for (const pageBlock of pageBlocks) {
+            const block = { ...pageBlock };
+            if (merged.length > 0 && block.type === 'p') {
+                const last = merged[merged.length - 1];
+                if (last.type === 'p' && !last.text.match(/[.!?:;""')\]]\s*$/)) {
+                    const startsLower = /^[a-z]/.test(block.text);
+                    const lastEndsWithComma = /,\s*$/.test(last.text);
+                    if (startsLower || lastEndsWithComma) {
+                        last.text += ' ' + block.text;
+                        last.html = `${last.html || escapeHtml(last.text)} ${block.html || escapeHtml(block.text)}`;
                         continue;
                     }
                 }
             }
-
             merged.push(block);
         }
     }
@@ -578,90 +721,200 @@ function mergeCrossPageBlocks(allPageBlocks) {
     return merged;
 }
 
-/**
- * Build chapters from merged text blocks.
- */
+function isBareChapterMarker(text) {
+    return /^chapter\s+[ivxlcdm\d]{1,6}$/i.test(normalizeText(text));
+}
+
+function isExplicitSectionMarker(text) {
+    return /^(part|prologue|epilogue|appendix|acknowledgements?|about the author|bibliography|references|glossary|index)\b/i.test(normalizeText(text));
+}
+
+function isGoodChapterTitleCandidate(block) {
+    if (!block || !['h1', 'h2'].includes(block.type)) return false;
+    const title = cleanHeadingText(block.text);
+    if (!title || title.length > 95) return false;
+    if (isBareChapterMarker(title) || isQuestionPrompt(title) || isLikelyCodeLine(title)) return false;
+    if (/^\d{1,3}(?:[.)]|\.\d{1,3})\s+/.test(title) && !isLikelyNumberedChapterTitle(title, block.fontSize / 10)) return false;
+    if (!/^[A-Z0-9"'“‘([]/.test(title)) return false;
+    if (/[.!?]/.test(title)) return false;
+    if (/\b(and|or|to|with|across|when|in|of|a|the)$/i.test(title)) return false;
+    return countWords(title) <= 10;
+}
+
+function prepareBlocksForChaptering(blocks) {
+    const prepared = blocks.map(block => ({ ...block }));
+    for (let i = 0; i < prepared.length - 1; i++) {
+        const current = prepared[i];
+        const next = prepared[i + 1];
+        if (isGoodChapterTitleCandidate(current) && next && isBareChapterMarker(next.text)) {
+            current.type = 'h1';
+            current._explicitChapter = true;
+            current._chapterMarker = next.text;
+            next._dropFromContent = true;
+        }
+    }
+    return prepared;
+}
+
+function isChapterSplitTitle(block, splitMode, currentTextLength, currentParagraphs, chapterPairMode) {
+    if (!block || block.type !== 'h1') return false;
+    const title = cleanHeadingText(block.text);
+    if (!title || title.length > 100) return false;
+    if (isQuestionPrompt(title) || isLikelyCodeLine(title)) return false;
+    if (block._explicitChapter) return true;
+    if (isExplicitSectionMarker(title)) return true;
+    if (chapterPairMode) return false;
+    if (isBareChapterMarker(title)) return true;
+    if (/^\d{1,3}(?:[.)]|\.\d{1,3})\s+/.test(title) && !isLikelyNumberedChapterTitle(title, block.fontSize / 10)) return false;
+    if (splitMode === 'header') return isGoodChapterTitleCandidate(block);
+    return currentTextLength > 16000
+        && currentParagraphs > 14
+        && isGoodChapterTitleCandidate(block)
+        && !/:/.test(title);
+}
+
+function renderBlock(block) {
+    if (block.type === 'h1') return `<h1>${escapeHtml(cleanHeadingText(block.text))}</h1>`;
+    if (block.type === 'h2') return `<h2>${escapeHtml(cleanHeadingText(block.text))}</h2>`;
+    if (block.type === 'pre') {
+        const cls = block.subtype === 'table' ? 'table-like' : 'code-block';
+        return `<pre class="${cls}"><code>${escapeHtml(block.text)}</code></pre>`;
+    }
+    if (block.type === 'list') {
+        const tag = block.ordered ? 'ol' : 'ul';
+        const start = block.ordered && block.start > 1 ? ` start="${block.start}"` : '';
+        const items = block.items.map(item => `        <li>${escapeHtml(item)}</li>`).join('\n');
+        return `<${tag} class="list-block"${start}>\n${items}\n</${tag}>`;
+    }
+    if (block.type === 'image') {
+        return `<figure class="page-snapshot"><img src="${escapeHtml(block.src)}" alt="${escapeHtml(block.alt)}"/></figure>`;
+    }
+    return `<p>${block.html || escapeHtml(block.text)}</p>`;
+}
+
 function buildChapters(blocks, splitMode) {
+    const chapterBlocks = prepareBlocksForChaptering(blocks);
+    const chapterPairMode = splitMode === 'auto' && chapterBlocks.filter(block => block._explicitChapter).length >= 3;
     const chapters = [];
     let chapterCount = 1;
-    let currentChapter = {
-        id: 'chapter_1',
-        title: 'Chapter 1',
-        content: ''
-    };
+    let currentChapter = { id: 'chapter_1', title: 'Front Matter', content: '' };
     let currentChapterTextLength = 0;
     let currentChapterParagraphs = 0;
 
-    for (const block of blocks) {
-        const escaped = escapeHtml(block.text);
-        let shouldSplit = false;
+    const pushCurrent = () => {
+        if (currentChapter.content.trim()) chapters.push({ ...currentChapter });
+    };
 
-        if (splitMode === 'auto') {
-            // Auto: Split on strong chapter titles, or on any h1 IF the chapter is already fairly long
-            const isStrongChapter = /^(chapter|part|section|prologue|epilogue|act|scene|appendix)\b/i.test(block.text);
-            if (block.type === 'h1' && escaped.length < 100) {
-                if (isStrongChapter || (currentChapterTextLength > 1500 && currentChapterParagraphs > 3)) {
-                    shouldSplit = true;
-                } else {
-                    // Downgrade h1 to h2 if we decided not to split, to maintain flow
-                    block.type = 'h2';
-                }
-            }
-        } else if (splitMode === 'header') {
-            // Split on all h1s
-            if (block.type === 'h1' && escaped.length < 100) {
-                shouldSplit = true;
-            }
-        }
+    for (const originalBlock of chapterBlocks) {
+        const block = { ...originalBlock };
+        if (block._dropFromContent) continue;
+        const shouldSplit = splitMode !== 'none'
+            && isChapterSplitTitle(block, splitMode, currentChapterTextLength, currentChapterParagraphs, chapterPairMode);
 
         if (shouldSplit) {
-            if (currentChapter.content.trim().length > 0) {
-                chapters.push({ ...currentChapter });
-                chapterCount++;
-            }
+            pushCurrent();
+            if (chapters.length > 0 || currentChapter.content.trim()) chapterCount++;
+            const chapterTitle = cleanHeadingText(block.text);
             currentChapter = {
                 id: `chapter_${chapterCount}`,
-                title: escaped,
-                content: `<h1>${escaped}</h1>\n`
+                title: chapterTitle,
+                content: `<h1>${escapeHtml(chapterTitle)}</h1>\n`
             };
-            currentChapterTextLength = escaped.length;
+            currentChapterTextLength = chapterTitle.length;
             currentChapterParagraphs = 0;
             continue;
         }
 
-        // Render block as HTML
-        if (block.type === 'h1') {
-            currentChapter.content += `<h1>${escaped}</h1>\n`;
-        } else if (block.type === 'h2') {
-            currentChapter.content += `<h2>${escaped}</h2>\n`;
-        } else {
-            currentChapter.content += `<p>${escaped}</p>\n`;
-            currentChapterParagraphs++;
-        }
-        currentChapterTextLength += escaped.length;
+        if (block.type === 'h1') block.type = 'h2';
+        currentChapter.content += renderBlock(block) + '\n';
+        if (block.type === 'p') currentChapterParagraphs++;
+        if (block.text) currentChapterTextLength += block.text.length;
 
-        // Auto-split very large chapters to keep EPUB performant
-        if (splitMode === 'auto' && currentChapter.content.length > 30000) {
-            chapters.push({ ...currentChapter });
+        if (splitMode === 'auto' && currentChapter.content.length > 120000) {
+            const baseTitle = currentChapter.title.replace(/\s+\(continued.*\)$/i, '');
+            pushCurrent();
             chapterCount++;
             currentChapter = {
                 id: `chapter_${chapterCount}`,
-                title: `Section ${chapterCount}`,
+                title: `${baseTitle} (continued ${chapterCount})`,
                 content: ''
             };
             currentChapterTextLength = 0;
+            currentChapterParagraphs = 0;
         }
     }
 
-    // Save final chapter
-    if (currentChapter.content.trim().length > 0 || chapters.length === 0) {
-        if (!currentChapter.content.trim()) currentChapter.content = '<p>Empty Chapter.</p>';
-        chapters.push(currentChapter);
-    }
-
+    pushCurrent();
+    if (chapters.length === 0) chapters.push({ id: 'chapter_1', title: 'Book Content', content: '<p>Empty Chapter.</p>' });
     return chapters;
 }
 
+function getSourceTocMetrics(pageBlocks) {
+    const textBlocks = pageBlocks.filter(block => block.type !== 'image');
+    const texts = textBlocks.map(block => block.text || '').filter(Boolean);
+    const fullText = texts.join(' ');
+    const entryCount = texts.filter(text => {
+        const t = cleanHeadingText(text);
+        return /^\d{1,2}[.)]\s+[A-Z]/.test(t) || /^(appendix|acknowledgements?|index|references|bibliography)\b/i.test(t);
+    }).length;
+    const headingCount = textBlocks.filter(block => block.type === 'h1' || block.type === 'h2' || block.type === 'list').length;
+    const longNarrativeCount = texts.filter(text => text.length > 450 && /[.!?]\s+["A-Z]/.test(text)).length;
+    return {
+        hasTocHeading: /\btable\s+of\s+contents\b/i.test(fullText),
+        entryCount,
+        headingCount,
+        longNarrativeCount,
+        totalChars: fullText.length,
+        blockCount: textBlocks.length,
+    };
+}
+
+function isLikelySourceTocPage(pageBlocks, pageNumber, totalPages, tocActive) {
+    if (pageNumber > Math.min(35, Math.max(12, totalPages * 0.18))) return false;
+    const m = getSourceTocMetrics(pageBlocks);
+    if (m.hasTocHeading && (m.entryCount >= 1 || m.headingCount >= 3)) return true;
+    if (tocActive && m.entryCount >= 1 && m.longNarrativeCount === 0 && m.totalChars < 2200) return true;
+    return m.entryCount >= 5 && m.longNarrativeCount === 0 && m.headingCount >= 5;
+}
+
+async function pageHasVisualContent(page, pageTextLen) {
+    if (pageTextLen > 650) return false;
+    const opList = await page.getOperatorList();
+    const imageOps = (opList.fnArray || []).filter(fn => IMAGE_PAINT_OPS.has(fn)).length;
+    return imageOps > 0 && (pageTextLen < 250 || imageOps >= 2);
+}
+
+async function renderPageSnapshot(page, pageNumber) {
+    const viewport = page.getViewport({ scale: TEXT_MODE_SNAPSHOT_DPI / 72 });
+    const canvas = document.createElement('canvas');
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+    const blob = await new Promise((resolve, reject) => {
+        canvas.toBlob(result => result ? resolve(result) : reject(new Error(`Could not encode page ${pageNumber} snapshot.`)), 'image/jpeg', TEXT_MODE_SNAPSHOT_QUALITY);
+    });
+    return {
+        id: `snapshot_${pageNumber}`,
+        path: `images/page_snapshot_${pageNumber}.jpg`,
+        blob,
+    };
+}
+
+async function createSnapshotBlock(page, pageNumber, imageAssets) {
+    const asset = await renderPageSnapshot(page, pageNumber);
+    imageAssets.push(asset);
+    return {
+        type: 'image',
+        text: '',
+        src: asset.path,
+        alt: `Page ${pageNumber} visual snapshot`,
+        pageNumber,
+    };
+}
+
+function attachPageNumber(blocks, pageNumber) {
+    return blocks.map(block => ({ ...block, pageNumber }));
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Mode A: Reflowable Text Mode Converter (Intelligent Pipeline)
@@ -669,77 +922,78 @@ function buildChapters(blocks, splitMode) {
 
 async function convertTextMode(title, author, splitMode, coverStyle, baseFontSize, totalPages) {
     const zip = new JSZip();
+    const imageAssets = [];
 
-    // ═══ PHASE 1: Document Analysis ═══
     logMessage('Phase 1: Analyzing document structure...', 'info');
     updateProgress(2, 'Analyzing document...', 'Scanning pages for layout patterns, fonts, and headers.');
     const analysis = await analyzeDocument(pdfDoc);
     logMessage(`Body font: ${analysis.bodyFontSize}pt | ${analysis.headerPatterns.size} header patterns | ${analysis.footerPatterns.size} footer patterns detected`, 'success');
-    if (analysis.headerPatterns.size > 0) {
-        logMessage(`Headers to strip: "${[...analysis.headerPatterns].join('", "')}"`, 'info');
-    }
 
-    // ═══ PHASE 2: Per-page text extraction with intelligence ═══
-    logMessage('Phase 2: Extracting text with column & header/footer awareness...', 'info');
+    logMessage('Phase 2: Extracting structured text, lists, code, tables, and visual fallbacks...', 'info');
     const allPageBlocks = [];
     let multiColPages = 0;
-    let skippedPages = 0;
+    let skippedEmptyPages = 0;
+    let skippedSourceTocPages = 0;
+    let hybridSnapshotPages = 0;
+    let sourceTocActive = false;
 
     for (let i = 1; i <= totalPages; i++) {
-        updateProgress(5 + (i / totalPages) * 60, `Parsing page ${i}/${totalPages}`, 'Intelligent text extraction with column detection.');
+        updateProgress(5 + (i / totalPages) * 60, `Parsing page ${i}/${totalPages}`, 'Reading text geometry and preserving book structure.');
 
         const page = await pdfDoc.getPage(i);
         const vp = page.getViewport({ scale: 1 });
         const tc = await page.getTextContent();
+        let pageBlocks = [];
 
-        if (!tc.items || tc.items.length === 0) {
-            skippedPages++;
+        if (tc.items && tc.items.length > 0) {
+            const filtered = filterHeadersFooters(tc.items, analysis, vp.height);
+            const columns = detectColumns(filtered, vp.width);
+            if (columns.length > 1) multiColPages++;
+            for (const colItems of columns) {
+                pageBlocks.push(...extractBlocksFromColumn(colItems, analysis.bodyFontSize));
+            }
+            pageBlocks = attachPageNumber(pageBlocks, i);
+        }
+
+        let pageTextLen = pageBlocks.reduce((sum, block) => sum + (block.text || '').length, 0);
+
+        if (splitMode !== 'page' && pageBlocks.length > 0 && isLikelySourceTocPage(pageBlocks, i, totalPages, sourceTocActive)) {
+            sourceTocActive = true;
+            skippedSourceTocPages++;
             continue;
         }
+        if (sourceTocActive) sourceTocActive = false;
 
-        // Step A: Strip headers and footers
-        const filtered = filterHeadersFooters(tc.items, analysis, vp.height);
-        if (filtered.length === 0) { skippedPages++; continue; }
-
-        // Step B: Detect columns
-        const columns = detectColumns(filtered, vp.width);
-        if (columns.length > 1) multiColPages++;
-
-        // Step C: Extract text blocks from each column (left → right)
-        const pageBlocks = [];
-        for (const colItems of columns) {
-            const blocks = extractBlocksFromColumn(colItems, analysis.bodyFontSize);
-            pageBlocks.push(...blocks);
+        if (pageTextLen < 30) {
+            pageBlocks = [await createSnapshotBlock(page, i, imageAssets)];
+            pageTextLen = 0;
+            skippedEmptyPages++;
+            hybridSnapshotPages++;
+        } else if (await pageHasVisualContent(page, pageTextLen)) {
+            pageBlocks.push(await createSnapshotBlock(page, i, imageAssets));
+            hybridSnapshotPages++;
         }
 
-        // Step D: Skip near-empty pages (< 30 chars of meaningful text)
-        const pageTextLen = pageBlocks.reduce((s, b) => s + b.text.length, 0);
-        if (pageTextLen < 30) { skippedPages++; continue; }
-
         if (splitMode === 'page') {
-            // In per-page mode, each PDF page = one chapter, no cross-page merging
-            const html = pageBlocks.map(b => {
-                const escaped = escapeHtml(b.text);
-                if (b.type === 'h1') return `<h1>${escaped}</h1>`;
-                if (b.type === 'h2') return `<h2>${escaped}</h2>`;
-                return `<p>${escaped}</p>`;
-            }).join('\n');
-
-            allPageBlocks.push([{ type: 'p', text: '', _rawHtml: html, _pageTitle: `Page ${i}` }]);
+            allPageBlocks.push([{
+                type: 'page',
+                text: '',
+                _rawHtml: pageBlocks.map(renderBlock).join('\n'),
+                _pageTitle: `Page ${i}`,
+            }]);
         } else {
             allPageBlocks.push(pageBlocks);
         }
     }
 
-    logMessage(`Extraction done: ${multiColPages} multi-column pages, ${skippedPages} empty/header-only pages skipped.`, 'success');
+    logMessage(`Extraction done: ${multiColPages} multi-column pages, ${skippedSourceTocPages} source ToC pages skipped, ${hybridSnapshotPages} visual snapshots added.`, 'success');
+    if (skippedEmptyPages > 0) logMessage(`${skippedEmptyPages} sparse/scanned pages preserved as images.`, 'info');
 
-    // ═══ PHASE 3: Cross-page paragraph merging ═══
     logMessage('Phase 3: Merging split paragraphs across page boundaries...', 'info');
     updateProgress(68, 'Restructuring...', 'Joining paragraphs split across pages.');
 
     let chapters;
     if (splitMode === 'page') {
-        // Per-page mode: one chapter per page, no merging
         chapters = [];
         let chapterCount = 1;
         for (const pageBlocks of allPageBlocks) {
@@ -754,18 +1008,15 @@ async function convertTextMode(title, author, splitMode, coverStyle, baseFontSiz
         }
     } else {
         const merged = mergeCrossPageBlocks(allPageBlocks);
-        const totalTextLen = merged.reduce((s, b) => s + b.text.length, 0);
+        const totalTextLen = merged.reduce((sum, block) => block.type === 'image' ? sum : sum + (block.text || '').length, 0);
 
-        // If very little text, auto-switch to image mode
-        if (totalTextLen < 200) {
-            logMessage('Very little text extracted — switching to Fixed Image mode.', 'error');
+        if (totalTextLen < 200 && imageAssets.length === 0) {
+            logMessage('Very little text extracted; switching to Fixed Image mode.', 'error');
             const dpi = parseInt(imageDpiSelect.value, 10);
             return await convertImageMode(title, author, dpi, coverStyle, totalPages);
         }
 
         logMessage(`Total extracted: ${merged.length} blocks, ~${Math.round(totalTextLen / 1000)}KB of text.`, 'info');
-
-        // ═══ PHASE 4: Chapter building ═══
         logMessage('Phase 4: Building chapter structure...', 'info');
         updateProgress(72, 'Building chapters...', 'Organizing content into readable sections.');
         chapters = buildChapters(merged, splitMode);
@@ -773,7 +1024,6 @@ async function convertTextMode(title, author, splitMode, coverStyle, baseFontSiz
 
     logMessage(`Created ${chapters.length} chapter(s).`, 'success');
 
-    // ═══ PHASE 5: EPUB Assembly ═══
     updateProgress(80, 'Assembling EPUB...', 'Creating package structure and metadata.');
     logMessage('Phase 5: Assembling EPUB container...');
 
@@ -811,21 +1061,45 @@ h1 {
     page-break-before: always;
 }
 h2 {
-    font-size: 1.4em;
+    font-size: 1.35em;
     font-weight: bold;
-    margin: 1.5em 0 0.8em;
+    margin: 1.4em 0 0.7em;
 }
+.list-block { margin: 0.4em 0 0.8em 1.6em; padding-left: 1.1em; }
+.list-block li { margin: 0.2em 0; }
+.code-block, .table-like {
+    white-space: pre-wrap;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.9em;
+    line-height: 1.35;
+    background: #f4f4f5;
+    border-left: 0.25em solid #c4b5fd;
+    padding: 0.8em;
+    overflow-wrap: anywhere;
+}
+.table-like { background: #fafafa; border-left-color: #93c5fd; }
+.page-snapshot { margin: 1em 0; text-align: center; page-break-inside: avoid; }
+.page-snapshot img { max-width: 100%; height: auto; }
 .cover-wrapper { text-align: center; page-break-after: always; margin: 0; padding: 0; }
 .cover-img { max-width: 100%; height: auto; max-height: 95vh; }`);
 
-    // Cover
     let hasCover = false;
     if (coverStyle !== 'none') {
         updateProgress(85, 'Generating cover...', 'Creating cover image.');
         try {
             const coverBlob = await generateBookCoverBlob(coverStyle, title, author);
-            if (coverBlob) { zip.file('OEBPS/images/cover.jpg', coverBlob); hasCover = true; logMessage('Cover image created.', 'success'); }
-        } catch (e) { logMessage(`Cover failed: ${e.message}. Skipping.`, 'info'); }
+            if (coverBlob) {
+                zip.file('OEBPS/images/cover.jpg', coverBlob);
+                hasCover = true;
+                logMessage('Cover image created.', 'success');
+            }
+        } catch (e) {
+            logMessage(`Cover failed: ${e.message}. Skipping.`, 'info');
+        }
+    }
+
+    for (const asset of imageAssets) {
+        zip.file(`OEBPS/${asset.path}`, asset.blob);
     }
 
     if (hasCover) {
@@ -851,7 +1125,7 @@ ${ch.content}
     });
 
     let tocItems = '';
-    chapters.forEach(ch => { tocItems += `        <li><a href="${ch.id}.xhtml">${escapeHtml(ch.title)}</a></li>\n`; });
+    chapters.forEach(ch => { tocItems += `            <li><a href="${ch.id}.xhtml">${escapeHtml(ch.title)}</a></li>\n`; });
 
     zip.file('OEBPS/toc.xhtml',
 `<?xml version="1.0" encoding="utf-8"?>
@@ -878,6 +1152,9 @@ ${hasCover ? '            <li><a href="cover.xhtml">Cover</a></li>\n' : ''}${toc
     }
     manifest += `    <item id="toc" href="toc.xhtml" media-type="application/xhtml+xml" properties="nav"/>\n`;
     manifest += `    <item id="style" href="stylesheet.css" media-type="text/css"/>\n`;
+    imageAssets.forEach(asset => {
+        manifest += `    <item id="${asset.id}" href="${asset.path}" media-type="image/jpeg"/>\n`;
+    });
     spine += `    <itemref idref="toc"/>\n`;
     chapters.forEach(ch => {
         manifest += `    <item id="${ch.id}" href="${ch.id}.xhtml" media-type="application/xhtml+xml"/>\n`;
@@ -886,7 +1163,7 @@ ${hasCover ? '            <li><a href="cover.xhtml">Cover</a></li>\n' : ''}${toc
 
     zip.file('OEBPS/content.opf',
 `<?xml version="1.0" encoding="UTF-8"?>
-<package xmlns="http://www.idpf.org/2007/opf" unique-identifier="BookID" version="3.0">
+<package xmlns="http://www.idpf.org/2007/opf" unique-identifier="BookID" version="3.0" prefix="dcterms: http://purl.org/dc/terms/">
   <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
     <dc:title>${escapeHtml(title)}</dc:title>
     <dc:creator>${escapeHtml(author)}</dc:creator>
