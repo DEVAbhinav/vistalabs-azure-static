@@ -820,6 +820,53 @@ body {
     margin-top: 1.5rem;
 }
 
+.mobile-reading-section,
+.faq-section {
+    margin-top: 2.5rem;
+}
+
+.seo-copy-card {
+    padding: 1.75rem;
+}
+
+.seo-copy-card p {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    line-height: 1.65;
+    font-family: var(--font-body);
+}
+
+.seo-copy-spacer {
+    margin-top: 0.85rem;
+}
+
+.seo-list {
+    margin-top: 1rem;
+    padding-left: 1.25rem;
+    display: grid;
+    gap: 0.55rem;
+}
+
+.seo-steps {
+    list-style: decimal;
+    counter-reset: none;
+}
+
+.seo-steps li strong {
+    color: var(--text-main);
+}
+
+.seo-list li {
+    color: var(--text-muted);
+    font-size: 0.92rem;
+    line-height: 1.5;
+    font-family: var(--font-body);
+}
+
+.faq-grid {
+    gap: 1rem;
+}
+
 .section-title {
     text-align: center;
     font-size: 1.75rem;
