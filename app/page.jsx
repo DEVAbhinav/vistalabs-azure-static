@@ -582,6 +582,20 @@ export default function HomePage() {
                 </a>
               </article>
 
+              <article className="card portfolio-card" data-reveal style={{ transitionDelay: '150ms' }}>
+                <figure className="portfolio-figure">
+                  <img src="/portfolio/banaras-insider.svg" alt="Varanasi Taxi Web App" loading="lazy" />
+                </figure>
+                <header>
+                  <h3>Varanasi Taxi</h3>
+                  <span className="tag">Next.js Mobility</span>
+                </header>
+                <p>Engineered an ultra-fast static web application for fixed-rate airport transfers, temple darshan, and highway outstation cab dispatch in Varanasi.</p>
+                <a className="arrow-link" href="https://www.varanasitaxis.com/?utm_source=vistalabs&utm_medium=portfolio&utm_campaign=client_showcase" target="_blank" rel="noopener noreferrer">
+                  Explore Project
+                </a>
+              </article>
+
               <article className="card portfolio-card" data-reveal style={{ transitionDelay: '200ms' }}>
                 <figure className="portfolio-figure">
                   <img src="/portfolio/gaadi-diary.svg" alt="Gaadi Diary Dashboard" loading="lazy" />
